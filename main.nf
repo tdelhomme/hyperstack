@@ -43,7 +43,6 @@ if (params.help) {
     log.info 'Mandatory arguments:'
     log.info '    --train_vcf                    FILE         input vcf for training.'
     log.info '    --apply_vcf                    FILE         input vcf to apply the model.'
-    log.info '    --gold_vcf                     FILE         gold vcf i.e. containing a geno filed -isTrue-.'
     log.info ''
     log.info 'Optional arguments:'
     log.info '    --output_folder                FOLDER         Output folder (default: needlestack-ITC_result).'
@@ -55,14 +54,11 @@ if (params.help) {
 
 params.train_vcf = null
 params.apply_vcf = null
-params.gold_list = null
 params.output_folder = "needlestack-ITC_result"
 
-if(params.train_vcf == null | params.apply_vcf == null | params.gold_list == null){
+if(params.train_vcf == null | params.apply_vcf == null ){
   exit 1, "Please specify each of the following parameters: --train_vcf, --apply_vcf and --gold_list"
 }
-
-gl = file(params.gold_vcf)
 
 train = Channel.fromPath(params.train_vcf).view { "value: $it" }
 train_tbi = file(params.train_vcf + '.tbi')
@@ -136,7 +132,6 @@ process ITC {
 
   input:
   file v from sample_vcf
-  file gl
 
   output:
   file "*Rdata" into itc
