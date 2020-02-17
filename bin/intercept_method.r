@@ -128,5 +128,5 @@ for(sub in TRIPLETS_96){
 
 # return the list of estimated linear models for each substitution
 assign(paste("rlm_ITC",sm,mutation_type,sep="_"), list_mod)
-save(list = ls(pattern="rlm_ITC_"), file=paste(output_folder,"/","rlm","_",mutation_type,"_ITC.Rdata",sep=""))
+save(list = ls(pattern="rlm_ITC_"), file=paste(output_folder,"/","rlm","_",sm,"_",mutation_type,"_ITC.Rdata",sep=""))
 if(! no_plots) dev.off()
