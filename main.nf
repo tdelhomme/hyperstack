@@ -66,6 +66,7 @@ train = Channel.fromPath(params.train_vcf).view { "value: $it" }
 train_tbi = file(params.train_vcf + '.tbi')
 apply = Channel.fromPath(params.apply_vcf).view { "value: $it" }
 apply_tbi = file(params.apply_vcf + '.tbi')
+germline_file = file(params.germline_file)
 
 process training {
 
