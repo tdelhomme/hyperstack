@@ -128,7 +128,7 @@ process ITC {
   tag {sm}
 
   publishDir params.output_folder+"/ITC/", mode: 'copy', pattern: "*.Rdata"
-  publishDir params.output_folder+"/PLOT/", mode: 'copy', pattern: "*.pdf"
+  publishDir params.output_folder+"/PLOTS/", mode: 'copy', pattern: "*.pdf"
 
   input:
   file v from sample_vcf
