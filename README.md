@@ -7,7 +7,7 @@ This pipeline first trains a random forest algorithm based on ethnicity of the s
 
 Then it applies this random forest on a second VCF (new genotype statistic: FPRF).
 
-Finally it computes the proportion of each base subtitution (96-profile) estimated form our intercept method/.
+Finally it computes the proportion of each base subtitution (96-profile) estimated form our intercept method.
 
 ## Dependencies
 
