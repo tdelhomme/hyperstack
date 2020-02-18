@@ -12,12 +12,12 @@ args <- argsL;rm(argsL)
 if(! is.null(args$help)) {
   cat("
       ---- INTERCEPT METHOD ----
-      
+
       Mandatory arguments:
       --vcf                       - input VCF (should be in bgzip format and indexed with tabix)
       --bin_path                  - path to bin folder containing functions to load
       --help                      - print this text
-      
+
       Optional arguments:
       --mutation_type             - type of mutations that would be used(all(default), exonic, intergenic or intronic)
       --no_plots                  - to do not output plots
@@ -26,9 +26,9 @@ if(! is.null(args$help)) {
       --genome                    - genome version (default=hg18)
       --sm                        - sample identifier (default=input vcf file name)
       --germline_mutations        - txt file containing germline mutations (chr pos ref alt sm)
-      
+
       example: Rscript intercept_method.r --vcf=file.bgz \n\n")
-  
+
   q(save="no")
 }
 
