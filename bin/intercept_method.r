@@ -42,7 +42,7 @@ if(is.null(args$output_folder)) { output_folder="." } else {output_folder = args
 system(paste("mkdir -p",output_folder,sep=" "))
 if(is.null(args$genome)) {genome="hg18"} else {genome=args$genome}
 if(is.null(args$sm)) {sm=substr(basename(vcf), 1, 21)} else {sm=args$sm}
-if(is.null(args$germline_mutations)) {germline_mutations=NULL} else {germline_mutations=read.table(args$germline_mutations,h=F)}
+if(is.null(args$germline_mutations)) {germline_mutations=NULL} else {germline_mutations=as.character(read.table(args$germline_mutations,h=F)[,1])}
 
 # loading required libraries
 suppressMessages(library(VariantAnnotation))
@@ -69,6 +69,9 @@ human_chrs = c("chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7", "chr8", "
                "chr15", "chr16", "chr17", "chr18", "chr19", "chr20", "chr21", "chr22","chrX", "chrY")
 calls = calls[which(chrs %in% human_chrs),]
 seqlevels(calls) = human_chrs
+
+# remove germline mutations if in input
+if(!is.null(germline_mutations)) calls = calls[which(! rownames(calls) %in% germline_mutations),]
 
 # filter the calls on the requested mutation type
 #refgene = unlist(info(calls)$Func.refGene)
