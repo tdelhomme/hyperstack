@@ -42,6 +42,7 @@ if(is.null(args$output_folder)) { output_folder="." } else {output_folder = args
 system(paste("mkdir -p",output_folder,sep=" "))
 if(is.null(args$genome)) {genome="hg18"} else {genome=args$genome}
 if(is.null(args$sm)) {sm=substr(basename(vcf), 1, 21)} else {sm=args$sm}
+if(is.null(args$germline_mutations)) {germline_mutations=NULL} else {germline_mutations=read.table(args$germline_mutations,h=F)}
 
 # loading required libraries
 suppressMessages(library(VariantAnnotation))
