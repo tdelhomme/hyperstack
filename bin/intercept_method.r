@@ -25,6 +25,7 @@ if(! is.null(args$help)) {
       --output_folder             - path to the output folder (default=vcf_name_intercept_output)
       --genome                    - genome version (default=hg18)
       --sm                        - sample identifier (default=input vcf file name)
+      --germline_mutations        - txt file containing germline mutations (chr pos ref alt sm)
       
       example: Rscript intercept_method.r --vcf=file.bgz \n\n")
   
@@ -48,6 +49,7 @@ suppressMessages(library(Hmisc))
 suppressMessages(library(robustbase))
 suppressMessages(library(MutationalPatterns))
 suppressMessages(library(BSgenome))
+suppressMessages(library(RCurl))
 
 source(paste(bin_path,"/objects.r",sep=""))
 
@@ -123,7 +125,7 @@ for(sub in TRIPLETS_96){
       segments(x0=fdr_ranges[i] + by_par/2, x1=fdr_ranges[i+1] + by_par/2, y0=wald1[3], y1=wald2[3], lty=2)
       segments(x0=fdr_ranges[i] + by_par/2, x1=fdr_ranges[i+1] + by_par/2, y0=wald1[2], y1=wald2[2], lty=2)
     }
-  }
+  } else {list_mod[[sub]] = 0}
 } ; mtext(paste(sm,mutation_type,sep=" - "), outer = TRUE, cex = 1.5)
 
 # return the list of estimated linear models for each substitution
