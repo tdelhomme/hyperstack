@@ -46,6 +46,7 @@ if (params.help) {
     log.info ''
     log.info 'Optional arguments:'
     log.info '    --output_folder                FOLDER         Output folder (default: needlestack-ITC_result).'
+    log.info '    --germline_file                FOLDER         Txt file containing germlines mutations (one per line, format:  chr1:1245716_C/T).'
     log.info 'Flags:'
     log.info '    --help                                        Display this message'
     log.info ''
@@ -55,6 +56,7 @@ if (params.help) {
 params.train_vcf = null
 params.apply_vcf = null
 params.output_folder = "needlestack-ITC_result"
+params.germline_file = "NO_FILE"
 
 if(params.train_vcf == null | params.apply_vcf == null ){
   exit 1, "Please specify each of the following parameters: --train_vcf, --apply_vcf and --gold_list"
@@ -139,10 +141,11 @@ process ITC {
 
   shell:
   sm = v.baseName
+  if (params.germline_file!="NO_FILE") { germline_par="--germline_mutation $germline_file" } else { germline_par="" }
   '''
   bgzip -c !{v} > !{v}.bgz
   tabix -p vcf !{v}.bgz
-  Rscript !{baseDir}/bin/intercept_method.r --vcf=!{v}.bgz --bin_path=!{baseDir}/bin --sm=!{sm} --fdr_range=0.2,0.8
+  Rscript !{baseDir}/bin/intercept_method.r --vcf=!{v}.bgz --bin_path=!{baseDir}/bin --sm=!{sm} --fdr_range=0.2,0.8 !{germline_par}
   '''
 
 }
