@@ -32,6 +32,7 @@ Finally it computes the proportion of each base subtitution (96-profile) estimat
 | Name      | Default value | Description     |
 |-----------|---------------|-----------------|
 | --output_folder   |      needlestack-ITC_result | Output folder  |
+| --germline_file   |      txt file containing one germline per line to be removed from the analysis (format: chr1:1245716_C/T)| TXT file  |
 
   * #### Flags
 
