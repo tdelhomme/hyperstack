@@ -144,7 +144,7 @@ process ITC {
   '''
   bgzip -c !{v} > !{v}.bgz
   tabix -p vcf !{v}.bgz
-  Rscript !{baseDir}/bin/intercept_method.r --vcf=!{v}.bgz --bin_path=!{baseDir}/bin --sm=!{sm} --fdr_range=0.2,0.8 !{germline_par}
+  Rscript !{baseDir}/bin/intercept_method.r --vcf=!{v}.bgz --bin_path=!{baseDir}/bin --sm=!{sm} --fdr_range=0.2,0.7 !{germline_par}
   '''
 
 }
