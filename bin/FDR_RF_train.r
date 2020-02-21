@@ -21,11 +21,11 @@ if(! is.null(args$help)) {
       --output_folder             - path to the output folder (default=vcfname_RF_output)
       --genome                    - genome version (default=hg18)
       --minQVAL                   - filtering calls with QVAL<minQVAL (default=50)
-      --features                  - vcf features to train the model 
+      --features                  - vcf features to train the model
                                     (default=QVAL,AO,AF,DP,ERR,QUAL,RVSB,FS)
 
       example: Rscript FDR_RF_train.r --vcf=myvcf.bgz \n\n")
-  
+
   q(save="no")
 }
 
@@ -41,28 +41,44 @@ suppressMessages(library(VariantAnnotation))
 suppressMessages(library(randomForest))
 suppressMessages(library(caret))
 suppressMessages(library(ROCR))
+suppressMessages(library(parallel))
 
 vcf = open(VcfFile(vcf, yieldSize=1000000))
 all_calls = readVcf(vcf, genome)
 
 while(dim(all_calls)[1] != 0) {
-  all_calls = all_calls[which(apply(geno(all_calls, "QVAL"), 1, max) >= minQVAL), ] # here can't use QUAL if the vcf was separated into different pieces (QVAL is not recalculated)
-  
+  # in case minQVAL is lower than --min_qval used for the calling
+  # don't use QUAL if the vcf was separated into different pieces (QVAL is not recalculated)
+  all_calls = all_calls[which(apply(geno(all_calls, "QVAL"), 1, max) >= minQVAL), ]
+
   ### populate the table of all mutations with features and ethnicities ###
-  
+
   n_samples = length(samples(header(all_calls)))
-  
+
   kept_variants = which(as.vector(t(geno(all_calls)$QVAL)) >= minQVAL)
   all_mut_table = data.frame(matrix(NA, nrow = length(kept_variants), ncol = length(features)))
   colnames(all_mut_table) = features
   rownames(all_mut_table) = paste(rep(rownames(all_calls), each=n_samples), rep(samples(header(all_calls)),n_samples), sep="\\")[kept_variants]
-  
-  sm_ethn = rep(info(all_calls)$ExAC_NFE, each=n_samples)[kept_variants]
-  
-  other_ethn = rep ( apply(data.frame(info(all_calls)$ExAC_AMR, info(all_calls)$ExAC_EAS, info(all_calls)$ExAC_FIN, 
-                                      info(all_calls)$ExAC_OTH, info(all_calls)$ExAC_SAS), 1, function(r){if(sum(!is.na(r))==0) {NA} else {max(r, na.rm=T)}}),
-                     each=n_samples)[kept_variants]
-  
+
+  eas = info(all_calls)$ExAC_EAS /
+    sum(info(all_calls)$ExAC_AMR, info(all_calls)$ExAC_EAS, info(all_calls)$ExAC_FIN, info(all_calls)$ExAC_OTH, info(all_calls)$ExAC_SAS, info(all_calls)$ExAC_NFE, na.rm=T)
+  oth = sum(info(all_calls)$ExAC_AMR, info(all_calls)$ExAC_FIN, info(all_calls)$ExAC_OTH, info(all_calls)$ExAC_SAS, info(all_calls)$ExAC_NFE, na.rm=T) /
+    sum(info(all_calls)$ExAC_AMR, info(all_calls)$ExAC_EAS, info(all_calls)$ExAC_FIN, info(all_calls)$ExAC_OTH, info(all_calls)$ExAC_SAS, info(all_calls)$ExAC_NFE, na.rm=T)
+
+  sm_ethn = rep(eas, each=n_samples)[kept_variants]
+
+  other_ethn = rep(other_ethn, each=n_samples)[kept_variants]
+
+  #nb_normals = unlist(mclapply(1:nrow(all_calls), function(i){
+  #  print(i)
+  #  d = all_calls[i,grepl("BN-", colnames(all_calls))]
+  #  dp = geno(d)$DP
+  #  if(length(which(dp>=10)) == sum(grepl("BN-", colnames(all_calls)))) {
+  #    qval = geno(d)$QVAL
+  #    sum(qval>=minQVAL)
+  #  } else { NA }
+  #}))
+
   # assign features
   for (f in features){
     if( f %in% names(geno(all_calls))){ # start with genotype because a variable can have same name in both geno and info (prioritize geno)
@@ -75,73 +91,70 @@ while(dim(all_calls)[1] != 0) {
       }
     }
   }
-  
+
   # assign status
   all_mut_table$status = NA # status as NA is for variants not used in the training
-  all_mut_table[which(all_mut_table$QVAL>=50 & all_mut_table$AO>=10 & all_mut_table$DP>=10 & sm_ethn>=0.2),"status"] = "TP"
-  all_mut_table[which(all_mut_table$QVAL>=50 & all_mut_table$AO>=10 & all_mut_table$DP>=10 & 
-                        ((sm_ethn<0.2 | is.na(sm_ethn)) & other_ethn >=0.2)),"status"] = "FP"
-  
+  all_mut_table[which(all_mut_table$QVAL>=50 & all_mut_table$AO>=10 & all_mut_table$DP>=10 & sm_ethn>=0.99),"status"] = "TP"
+  all_mut_table[which(all_mut_table$QVAL>=50 & all_mut_table$AO>=10 & all_mut_table$DP>=10 & other_ethn >=0.99),"status"] = "FP"
+
   # correct rvsb feature
   if("RVSB" %in% features) all_mut_table[which(all_mut_table$RVSB <0.5),"RVSB"]=0.5
-  
+
   train_table = all_mut_table[which(!is.na(all_mut_table$status)),]
-  
+
   #plots
   pdf(paste(output_folder,"/RF_plots.pdf",sep=""),8,8)
   par(mfrow=c(2,2))
   for(f in features) {
-    hist(train_table[which(train_table$status=="TP"),f], main=f, xlab=f, col=adjustcolor("darkgreen",0.7)) 
+    hist(train_table[which(train_table$status=="TP"),f], main=f, xlab=f, col=adjustcolor("darkgreen",0.7))
     hist(train_table[which(train_table$status=="FP"),f],main=f, xlab=f, col=adjustcolor("red",0.7))
   }
-  
+
   # training of the random forest
   rf = randomForest(as.factor(status) ~ .,
                     data = train_table,
                     importance = TRUE, # to allow us to inspect variable importance
                     ntree = 5000, sampsize = as.numeric(table(train_table$status)["TP"]), probs=T)
   save(rf, file=paste(output_folder,"/RF_needlestack.Rdata",sep=""))
-  
+
   # compute a ROC curve from k-fold cross validation
   folds <- createFolds(train_table$status, 10)
   all_pred_rf = c()
   all_status_rf = c()
-  
+
   for(i in 1:10){
     #print(paste("fold: ",i,sep=""))
     test = train_table[folds[[i]],]
     train = train_table[-folds[[i]],]
-    
+
     train$old_status=train$status; test$old_status=test$status
     train$status = 0 ; train[which(train$old_status=="TP"),"status"] = 1
     test$status = 0 ; test[which(test$old_status=="TP"),"status"] = 1
     rf_fold = randomForest(as.factor(status) ~ ., data = train[,c(features,"status")], importance = TRUE,
-                           ntree = 500, sampsize = as.numeric(table(train$status)["1"]), probs=T) 
+                           ntree = 500, sampsize = as.numeric(table(train$status)["1"]), probs=T)
     prediction = predict(rf_fold, test, type="prob")[,2]
     all_pred_rf = c(all_pred_rf, prediction)
     all_status_rf = c(all_status_rf, test$status)
   }
-  
+
   perf = performance( prediction( all_pred_rf, all_status_rf ), "rec" ,"ppv") #sens in y and tdr in x
   plot(perf, colorize=T, lwd=3, xlab="1-FDR", ylab="sensitivity", xaxt='n')
   auc = performance( prediction( all_pred_rf, all_status_rf ), "auc" )@y.values[[1]]
   text(0.98, 1, paste("auc=",round(auc,3)))
   garbage <- dev.off()
-  
+
   # apply the RF to all the mutations
   all_mut_table$FPprob = predict(rf, all_mut_table, type="prob")[,2]
   FPRF = rep(NA, length(rep(rownames(all_calls), each=n_samples)))
   FPRF[kept_variants] = all_mut_table$FPprob
-  
+
   # annotate the VCF with FPRF statistic
   geno(header(all_calls))["FPRF",]=list("A","Float","False Probability of being a variant for a trained Random-Forest model")
   geno(all_calls)$FPRF = matrix(data=FPRF, nrow=nrow(all_calls), byrow = T)
-  
+
   # write out the annotated VCF file
   con = file(out_vcf, open = "a")
   writeVcf(all_calls, con)
   close(con)
   all_calls = readVcf(vcf, genome)
 }
-
-
