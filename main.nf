@@ -72,7 +72,6 @@ process training {
 
   publishDir params.output_folder+"/PLOTS/", mode: 'copy', pattern: "*.pdf"
   publishDir params.output_folder+"/RDATA/", mode: 'copy', pattern: "*.Rdata"
-  publishDir params.output_folder+"/VCF/", mode: 'copy', pattern: "*.vcf"
 
   input:
   file t from train
@@ -81,7 +80,6 @@ process training {
   output:
   file "*.pdf" into plots
   file "*.Rdata" into rdata
-  file "*.vcf" into vcftrain
 
   shell:
   '''
