@@ -34,7 +34,7 @@ if(is.null(args$genome)) {genome="hg18"} else {genome=args$genome}
 if(is.null(args$output_folder)) { output_folder="."} else {output_folder = args$output_folder}
 system(paste("mkdir -p",output_folder,sep=" "))
 out_vcf = paste(output_folder, "/", paste( sub(".vcf.gz", "", sub('.vcf.bgz', '', basename(vcf))), "RF_needlestack.vcf", sep="_"), sep="")
-if(is.null(args$minQVAL)) {minQVAL=30} else {minQVAL=args$minQVAL}
+if(is.null(args$minQVAL)) {minQVAL=50} else {minQVAL=args$minQVAL}
 if(is.null(args$features)) {features=c("QVAL","AO","AF","DP","ERR","QUAL","RVSB","FS")} else {features=as.character(unlist(strsplit(args$features,",")))}
 
 suppressMessages(library(VariantAnnotation))
