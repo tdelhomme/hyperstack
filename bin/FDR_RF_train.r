@@ -77,8 +77,9 @@ while(dim(all_calls)[1] != 0) {
   
   sm_ethn = rep(get(paste("rp", ethn, sep="_")), each=n_samples)[kept_variants]
 
-  for(p in all_pop[which(all_pop != ethn)]){
-    if(exists("pdat")){pdat = cbind(pdat, get(paste("rp", p, sep="_")))} else {pdat = data.frame(get(paste("rp", p, sep="_")))}
+  pdat = data.frame(get(paste("rp", all_pop[which(all_pop != ethn)][1], sep="_")))
+  for(p in all_pop[which(all_pop != ethn)][2:length(all_pop[which(all_pop != ethn)])]){
+    pdat = cbind(pdat, get(paste("rp", p, sep="_")))
   }
   other_ethn = rep(apply(pdat, 1, function(r){if(sum(!is.na(r))==0) {NA} else {max(r, na.rm=T)}}), # compute max relative proportion of all other ethnicities
                    each=n_samples)[kept_variants]
