@@ -110,16 +110,18 @@ while(dim(all_calls)[1] != 0) {
 
   # assign status
   all_mut_table$status = NA # status as NA is for variants not used in the training
-  all_mut_table[which(sm_ethn>=0.99),"status"] = "TP"
-  all_mut_table[which(other_ethn >=0.99),"status"] = "FP"
+  all_mut_table[which(sm_ethn>=0.99 & exac_all>=0.001),"status"] = "TP"
+  all_mut_table[which(other_ethn >=0.99 & exac_all>=0.001),"status"] = "FP"
 
   # correct rvsb feature
   if("RVSB" %in% features) all_mut_table[which(all_mut_table$RVSB <0.5),"RVSB"]=0.5
-  
-  if(! exists("mut_table")) {mut_table=all_mut_table} else {mut_table = rbind(mut_table, all_mut_table)}
-}
 
-train_table = mut_table[which(!is.na(all_mut_table$status)),]
+  # return the table used for training
+  train_table_chunk = all_mut_table[which(!is.na(all_mut_table$status)),]
+  if(! exists("train_table")) {train_table=train_table_chunk} else {train_table = rbind(train_table, train_table_chunk)}
+  
+  all_calls = readVcf(vcf, genome)
+}
 
 #plots
 pdf(paste(output_folder,"/RF_plots.pdf",sep=""),8,8)
