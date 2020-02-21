@@ -159,7 +159,7 @@ for(i in 1:10){
   all_status_rf = c(all_status_rf, test$status)
 }
 
-perf = performance( prediction( all_pred_rf, all_status_rf ), "rec" ,"ppv") #sens in y and tdr in x
+perf = performance( prediction( all_pred_rf, all_status_rf ), "rec" ,"spec") #sens in y and tdr in x
 plot(perf, colorize=T, lwd=3, xlab="1-FDR", ylab="sensitivity", xaxt='n')
 auc = performance( prediction( all_pred_rf, all_status_rf ), "auc" )@y.values[[1]]
 text(0.98, 1, paste("auc=",round(auc,3)))
