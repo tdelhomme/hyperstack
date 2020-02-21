@@ -34,7 +34,7 @@ if(is.null(args$genome)) {genome="hg18"} else {genome=args$genome}
 if(is.null(args$output_folder)) { output_folder="."} else {output_folder = args$output_folder}
 system(paste("mkdir -p",output_folder,sep=" "))
 out_vcf = paste(output_folder, "/", paste( sub(".vcf.gz", "", sub('.vcf.bgz', '', basename(vcf))), "RF_needlestack.vcf", sep="_"), sep="")
-if(is.null(args$minQVAL)) {minQVAL=50} else {minQVAL=args$minQVAL}
+if(is.null(args$minQVAL)) {minQVAL=30} else {minQVAL=args$minQVAL}
 if(is.null(args$features)) {features=c("QVAL","AO","AF","DP","ERR","QUAL","RVSB","FS")} else {features=as.character(unlist(strsplit(args$features,",")))}
 
 suppressMessages(library(VariantAnnotation))
@@ -49,7 +49,7 @@ all_calls = readVcf(vcf, genome)
 while(dim(all_calls)[1] != 0) {
   # in case minQVAL is lower than --min_qval used for the calling
   # don't use QUAL if the vcf was separated into different pieces (QVAL is not recalculated)
-  all_calls = all_calls[which(apply(geno(all_calls, "QVAL"), 1, max) >= minQVAL), ]
+  # all_calls = all_calls[which(apply(geno(all_calls, "QVAL"), 1, max) >= minQVAL), ]
 
   ### populate the table of all mutations with features and ethnicities ###
 
@@ -60,14 +60,27 @@ while(dim(all_calls)[1] != 0) {
   colnames(all_mut_table) = features
   rownames(all_mut_table) = paste(rep(rownames(all_calls), each=n_samples), rep(samples(header(all_calls)),n_samples), sep="\\")[kept_variants]
 
-  eas = info(all_calls)$ExAC_EAS /
-    sum(info(all_calls)$ExAC_AMR, info(all_calls)$ExAC_EAS, info(all_calls)$ExAC_FIN, info(all_calls)$ExAC_OTH, info(all_calls)$ExAC_SAS, info(all_calls)$ExAC_NFE, na.rm=T)
-  oth = sum(info(all_calls)$ExAC_AMR, info(all_calls)$ExAC_FIN, info(all_calls)$ExAC_OTH, info(all_calls)$ExAC_SAS, info(all_calls)$ExAC_NFE, na.rm=T) /
-    sum(info(all_calls)$ExAC_AMR, info(all_calls)$ExAC_EAS, info(all_calls)$ExAC_FIN, info(all_calls)$ExAC_OTH, info(all_calls)$ExAC_SAS, info(all_calls)$ExAC_NFE, na.rm=T)
+  all_pop = c("EAS","AMR","FIN","OTH","SAS","NFE","AFR")
+  for(pop in all_pop){ # compute for each pop the relative proportion of the variants (0.5=50% of samples with that SNP were from this pop)
+    assign(paste("rp",pop,sep="_"), info(all_calls)[paste("ExAC",pop,sep="_")][,1] /
+             rowSums(data.frame(info(all_calls)$ExAC_AMR, info(all_calls)$ExAC_EAS, info(all_calls)$ExAC_FIN, info(all_calls)$ExAC_OTH, info(all_calls)$ExAC_SAS, 
+                 info(all_calls)$ExAC_NFE, info(all_calls)$ExAC_AFR), na.rm=T)
+             )
+  }
+  # compute the number of variant that are unique for the population
+  all_rp = unlist(lapply(all_pop, function(p) {
+    rp = get(paste("rp",p,sep="_"))
+    length(which(rp>=0.99))
+  }))
+  ethn = all_pop[which.max(all_rp)]
+  
+  sm_ethn = rep(get(paste("rp", ethn, sep="_")), each=n_samples)[kept_variants]
 
-  sm_ethn = rep(eas, each=n_samples)[kept_variants]
-
-  other_ethn = rep(other_ethn, each=n_samples)[kept_variants]
+  for(p in all_pop[which(all_pop != ethn)]){
+    if(exists("pdat")){pdat = cbind(pdat, get(paste("rp", p, sep="_")))} else {pdat = data.frame(get(paste("rp", p, sep="_")))}
+  }
+  other_ethn = rep(apply(pdat, 1, function(r){if(sum(!is.na(r))==0) {NA} else {max(r, na.rm=T)}}), # compute max relative proportion of all other ethnicities
+                   each=n_samples)[kept_variants]
 
   #nb_normals = unlist(mclapply(1:nrow(all_calls), function(i){
   #  print(i)
@@ -94,8 +107,8 @@ while(dim(all_calls)[1] != 0) {
 
   # assign status
   all_mut_table$status = NA # status as NA is for variants not used in the training
-  all_mut_table[which(all_mut_table$QVAL>=50 & all_mut_table$AO>=10 & all_mut_table$DP>=10 & sm_ethn>=0.99),"status"] = "TP"
-  all_mut_table[which(all_mut_table$QVAL>=50 & all_mut_table$AO>=10 & all_mut_table$DP>=10 & other_ethn >=0.99),"status"] = "FP"
+  all_mut_table[which(sm_ethn>=0.99),"status"] = "TP"
+  all_mut_table[which(other_ethn >=0.99),"status"] = "FP"
 
   # correct rvsb feature
   if("RVSB" %in% features) all_mut_table[which(all_mut_table$RVSB <0.5),"RVSB"]=0.5
