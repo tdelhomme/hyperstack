@@ -70,7 +70,7 @@ while(dim(all_calls)[1] != 0) {
   }
   # compute the number of variant that are unique for the population
   all_rp = unlist(lapply(all_pop, function(p) {
-    rp = get(paste("rp",p,sep="_"))
+    rp = rep(get(paste("rp", p, sep="_")), each=n_samples)[kept_variants]
     length(which(rp>=0.99))
   }))
   ethn = all_pop[which.max(all_rp)]
@@ -111,8 +111,8 @@ while(dim(all_calls)[1] != 0) {
 
   # assign status
   all_mut_table$status = NA # status as NA is for variants not used in the training
-  all_mut_table[which(sm_ethn>=0.99 & exac_all>=0.001),"status"] = "TP"
-  all_mut_table[which(other_ethn >=0.99 & exac_all>=0.001),"status"] = "FP"
+  all_mut_table[which(sm_ethn>=0.99),"status"] = "TP" # here add & exac_all>=0.001 if want to filter rare variants
+  all_mut_table[which(other_ethn >=0.99),"status"] = "FP" # here too
 
   # correct rvsb feature
   if("RVSB" %in% features) all_mut_table[which(all_mut_table$RVSB <0.5),"RVSB"]=0.5
