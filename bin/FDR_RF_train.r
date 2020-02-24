@@ -43,7 +43,7 @@ suppressMessages(library(caret))
 suppressMessages(library(ROCR))
 suppressMessages(library(parallel))
 
-vcf = open(VcfFile(vcf, yieldSize=1000000))
+vcf = open(VcfFile(vcf, yieldSize=500000))
 all_calls = readVcf(vcf, genome)
 
 while(dim(all_calls)[1] != 0) {
@@ -160,7 +160,7 @@ for(i in 1:10){
 }
 
 perf = performance( prediction( all_pred_rf, all_status_rf ), "rec" ,"spec") #sens in y and tdr in x
-plot(perf, colorize=T, lwd=3, xlab="1-FDR", ylab="sensitivity", xaxt='n')
+plot(perf, colorize=T, lwd=3, xlab="specificity", ylab="sensitivity", xaxt='n')
 auc = performance( prediction( all_pred_rf, all_status_rf ), "auc" )@y.values[[1]]
 text(0.98, 1, paste("auc=",round(auc,3)))
 garbage <- dev.off()
