@@ -1,4 +1,4 @@
-## objects and functions to load (from)
+## objects to load (from)
 
 # Predefined substitutions
 SUBSTITUTIONS = c('C>A','C>G','C>T','T>A','T>C','T>G')
