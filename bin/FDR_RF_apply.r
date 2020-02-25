@@ -43,10 +43,11 @@ if(is.null(args$minQVAL)) {minQVAL=50} else {minQVAL=args$minQVAL}
 suppressMessages(library(VariantAnnotation))
 suppressMessages(library(randomForest))
 
-vcf = open(VcfFile(vcf, yieldSize=1000000))
+vcf = open(VcfFile(vcf, yieldSize = 500000))
 all_calls = readVcf(vcf, genome)
 
 while(dim(all_calls)[1] != 0) {
+  print(paste("Starting a new chunk at:", date(), sep=" "))
   all_calls = all_calls[which(apply(geno(all_calls, "QVAL"), 1, max) >= minQVAL), ] # here can't use QUAL if the vcf was separated into different pieces (QVAL is not recalculated)
   
   ### populate the table of all mutations with features and ethnicities ###

@@ -14,7 +14,7 @@ if(! is.null(args$help)) {
       ---- INTERCEPT METHOD ----
 
       Mandatory arguments:
-      --vcf                       - input VCF (should be in bgzip format and indexed with tabix)
+      --vcf                       - input VCF with FPRF geno stat (should be in bgzip format and indexed with tabix)
       --bin_path                  - path to bin folder containing functions to load
       --help                      - print this text
 
@@ -63,30 +63,40 @@ library(ref_genome, character.only = TRUE)
 min_fdr = fdr_range[1] ; max_fdr = fdr_range[2]
 
 # format the input vcf into variantannotation vcf file and keep interesting chromosomes
-calls = readVcf( open(VcfFile(vcf,  yieldSize=500000)), genome)
-chrs = as.character(seqnames(rowRanges(calls,"seqnames")))
-human_chrs = c("chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7", "chr8", "chr9", "chr10", "chr11", "chr12", "chr13", "chr14",
-               "chr15", "chr16", "chr17", "chr18", "chr19", "chr20", "chr21", "chr22","chrX", "chrY")
-calls = calls[which(chrs %in% human_chrs),]
-seqlevels(calls) = human_chrs
+vcf = open(VcfFile(vcf,  yieldSize=500000))
+calls = readVcf(vcf, genome)
 
-# remove germline mutations if in input
-if(!is.null(germline_mutations)) calls = calls[which(! rownames(calls) %in% germline_mutations),]
-
-# filter the calls on the requested mutation type
-#refgene = unlist(info(calls)$Func.refGene)
-#if(mutation_type != "all") calls = calls[which(refgene == mutation_type)]
-
-# get the 3nucleotides context
-nut3_context = type_context(rowRanges(calls), ref_genome)
-all_mut1 = paste(substr(nut3_context$context,1,1), "[", nut3_context$types, "]", substr(nut3_context$context,3,3), sep = "")
-all_mut2 = rep(all_mut1, each = length(samples(header(calls))))
-# compute the FDRs
-all_fdr1 = as.vector(unlist(t(geno(calls)[["FPRF"]])))
-
-# get only non na mutations
-all_fdr = all_fdr1[which(!is.na(all_fdr1))]
-all_muts = all_mut2[which(!is.na(all_fdr1))]
+while(dim(calls)[1] != 0){
+  print(paste("Starting a new chunk at:", date(), sep=" "))
+  chrs = as.character(seqnames(rowRanges(calls,"seqnames")))
+  human_chrs = c("chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7", "chr8", "chr9", "chr10", "chr11", "chr12", "chr13", "chr14",
+                 "chr15", "chr16", "chr17", "chr18", "chr19", "chr20", "chr21", "chr22","chrX", "chrY")
+  calls = calls[which(chrs %in% human_chrs),]
+  seqlevels(calls) = human_chrs
+  
+  # remove germline mutations if in input
+  if(!is.null(germline_mutations)) calls = calls[which(! rownames(calls) %in% germline_mutations),]
+  
+  # filter the calls on the requested mutation type
+  #refgene = unlist(info(calls)$Func.refGene)
+  #if(mutation_type != "all") calls = calls[which(refgene == mutation_type)]
+  
+  # get the 3nucleotides context
+  nut3_context = type_context(rowRanges(calls), ref_genome)
+  all_mut1 = paste(substr(nut3_context$context,1,1), "[", nut3_context$types, "]", substr(nut3_context$context,3,3), sep = "")
+  all_mut2 = rep(all_mut1, each = length(samples(header(calls))))
+  # compute the FDRs
+  all_fdr1 = as.vector(unlist(t(geno(calls)[["FPRF"]]))) # use the statistic given by needlestack
+  
+  # get only non na mutations i.e. mutations with a FPRF value so for which we have apply the model (typically QVAL>50)
+  all_fdr_tot = all_fdr1[which(!is.na(all_fdr1))]
+  all_muts_tot = all_mut2[which(!is.na(all_mut2))]
+  
+  if(! exists("all_fdr")) {all_fdr=all_fdr_tot} else {all_fdr = c(all_fdr, all_fdr_tot)}
+  if(! exists("all_muts")) {all_muts=all_muts_tot} else {all_muts = c(all_muts, all_muts_tot)}
+  
+  calls = readVcf(vcf, genome)
+}
 
 # initiate the results
 by_par = 0.15
