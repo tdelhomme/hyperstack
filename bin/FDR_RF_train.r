@@ -20,7 +20,7 @@ if(! is.null(args$help)) {
       Optional arguments:
       --output_folder             - path to the output folder (default=vcfname_RF_output)
       --genome                    - genome version (default=hg18)
-      --minQVAL                   - filtering calls with QVAL<minQVAL (default=50)
+      --minQVAL                   - filtering calls with QVAL<minQVAL (default=20)
       --features                  - vcf features to train the model
                                     (default=QVAL,AO,AF,DP,ERR,QUAL,RVSB,FS)
       --ethnicity                 - to use ethnicity to train (use --ethnicity=TRUE)
@@ -35,7 +35,7 @@ if(is.null(args$genome)) {genome="hg18"} else {genome=args$genome}
 if(is.null(args$output_folder)) { output_folder="."} else {output_folder = args$output_folder}
 system(paste("mkdir -p",output_folder,sep=" "))
 out_vcf = paste(output_folder, "/", paste( sub(".vcf.gz", "", sub('.vcf.bgz', '', basename(vcf))), "RF_needlestack.vcf", sep="_"), sep="")
-if(is.null(args$minQVAL)) {minQVAL=50} else {minQVAL=args$minQVAL}
+if(is.null(args$minQVAL)) {minQVAL=20} else {minQVAL=args$minQVAL}
 if(is.null(args$features)) {features=c("QVAL","AO","AF","DP","ERR","QUAL","RVSB","FS")} else {features=as.character(unlist(strsplit(args$features,",")))}
 if(is.null(args$ethnicity)) {ethnicity = FALSE} else {ethnicity = TRUE}
 
@@ -66,7 +66,7 @@ while(dim(all_calls)[1] != 0) {
   all_pop = c("EAS","AMR","FIN","OTH","SAS","NFE","AFR")
   for(pop in all_pop){ # compute for each pop the relative proportion of the variants (0.5=50% of samples with that SNP were from this pop)
     assign(paste("rp",pop,sep="_"), info(all_calls)[paste("ExAC",pop,sep="_")][,1] /
-             rowSums(data.frame(info(all_calls)$ExAC_AMR, info(all_calls)$ExAC_EAS, info(all_calls)$ExAC_FIN, info(all_calls)$ExAC_OTH, info(all_calls)$ExAC_SAS, 
+             rowSums(data.frame(info(all_calls)$ExAC_AMR, info(all_calls)$ExAC_EAS, info(all_calls)$ExAC_FIN, info(all_calls)$ExAC_OTH, info(all_calls)$ExAC_SAS,
                  info(all_calls)$ExAC_NFE, info(all_calls)$ExAC_AFR), na.rm=T)
              )
   }
@@ -76,7 +76,7 @@ while(dim(all_calls)[1] != 0) {
     length(which(rp>=0.99))
   }))
   ethn = all_pop[which.max(all_rp)]
-  
+
   sm_ethn = rep(get(paste("rp", ethn, sep="_")), each=n_samples)[kept_variants]
 
   pdat = data.frame(get(paste("rp", all_pop[which(all_pop != ethn)][1], sep="_")))
@@ -85,7 +85,7 @@ while(dim(all_calls)[1] != 0) {
   }
   other_ethn = rep(apply(pdat, 1, function(r){if(sum(!is.na(r))==0) {NA} else {max(r, na.rm=T)}}), # compute max relative proportion of all other ethnicities
                    each=n_samples)[kept_variants]
-  
+
   exac_all = rep(info(all_calls)$ExAC_ALL, each=n_samples)[kept_variants]
 
   # assign features
@@ -110,7 +110,7 @@ while(dim(all_calls)[1] != 0) {
     all_mut_table[which(all_nbq>=2),"status"] = "TP" # if found in at least 2 normal cells
     all_mut_table[which(all_nbq==1 & (exac_all == 0 | is.na(exac_all))),"status"] = "FP" # if found in only 1 normal cell
   }
-  
+
   if( ethnicity ){
     print("INFO: using ethnicity of the sample to build the sets of TP/FP")
     # assign status
@@ -125,7 +125,7 @@ while(dim(all_calls)[1] != 0) {
   # return the table used for training
   train_table_chunk = all_mut_table[which(!is.na(all_mut_table$status)),]
   if(! exists("train_table")) {train_table=train_table_chunk} else {train_table = rbind(train_table, train_table_chunk)}
-  
+
   all_calls = readVcf(vcf, genome)
 }
 
@@ -153,7 +153,7 @@ for(i in 1:10){
   #print(paste("fold: ",i,sep=""))
   test = train_table[folds[[i]],]
   train = train_table[-folds[[i]],]
-  
+
   train$old_status=train$status; test$old_status=test$status
   train$status = 0 ; train[which(train$old_status=="TP"),"status"] = 1
   test$status = 0 ; test[which(test$old_status=="TP"),"status"] = 1

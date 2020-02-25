@@ -140,7 +140,7 @@ process ITC {
 
   shell:
   sm = v.baseName
-  if (params.germline_file!="NO_FILE") { germline_par="--germline_mutation $germline_file" } else { germline_par="" }
+  if (params.germline_file!="NO_FILE") { germline_par="--germline_mutation=$germline_file" } else { germline_par="" }
   '''
   bgzip -c !{v} > !{v}.bgz
   tabix -p vcf !{v}.bgz

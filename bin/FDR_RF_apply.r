@@ -21,12 +21,12 @@ if(! is.null(args$help)) {
       Optional arguments:
       --output_folder             - path to the output folder (default=vcfname_RF_output)
       --genome                    - genome version (default=hg18)
-      --minQVAL                   - filtering calls with QVAL<minQVAL (default=50)
-      --features                  - vcf features used to train the RF model 
+      --minQVAL                   - filtering calls with QVAL<minQVAL (default=20)
+      --features                  - vcf features used to train the RF model
                                     (default=QVAL,AO,AF,DP,ERR,QUAL,RVSB,FS)
 
       example: Rscript FDR_RF_apply.r --vcf=myvcf.bgz --model=myRF.Rdata \n\n")
-  
+
   q(save="no")
 }
 
@@ -38,7 +38,7 @@ if(is.null(args$output_folder)) { output_folder="."} else {output_folder = args$
 system(paste("mkdir -p",output_folder,sep=" "))
 out_vcf = paste(output_folder, "/", paste( sub(".vcf.gz", "", sub('.vcf.bgz', '', basename(vcf))), "RF_needlestack.vcf", sep="_"), sep="")
 if(is.null(args$features)) {features=c("QVAL","AO","AF","DP","ERR","QUAL","RVSB","FS")} else {features=as.character(unlist(strsplit(args$features,",")))}
-if(is.null(args$minQVAL)) {minQVAL=50} else {minQVAL=args$minQVAL}
+if(is.null(args$minQVAL)) {minQVAL=20} else {minQVAL=args$minQVAL}
 
 suppressMessages(library(VariantAnnotation))
 suppressMessages(library(randomForest))
@@ -49,16 +49,16 @@ all_calls = readVcf(vcf, genome)
 while(dim(all_calls)[1] != 0) {
   print(paste("Starting a new chunk at:", date(), sep=" "))
   all_calls = all_calls[which(apply(geno(all_calls, "QVAL"), 1, max) >= minQVAL), ] # here can't use QUAL if the vcf was separated into different pieces (QVAL is not recalculated)
-  
+
   ### populate the table of all mutations with features and ethnicities ###
-  
+
   n_samples = length(samples(header(all_calls)))
-  
+
   kept_variants = which(as.vector(t(geno(all_calls)$QVAL)) >= minQVAL)
   all_mut_table = data.frame(matrix(NA, nrow = length(kept_variants), ncol = length(features)))
   colnames(all_mut_table) = features
   rownames(all_mut_table) = paste(rep(rownames(all_calls), each=n_samples), rep(samples(header(all_calls)),n_samples), sep="\\")[kept_variants]
-  
+
   # assign features
   for (f in features){
     if( f %in% names(geno(all_calls))){ # start with genotype because a variable can have same name in both geno and info (prioritize geno)
@@ -72,21 +72,19 @@ while(dim(all_calls)[1] != 0) {
     }
   }
   if("RVSB" %in% features) all_mut_table[which(all_mut_table$RVSB <0.5),"RVSB"]=0.5
-  
+
   # apply the random forest model
   all_mut_table$FPprob = predict(rf, all_mut_table, type="prob")[,2]
   FPRF = rep(NA, length(rep(rownames(all_calls), each=n_samples)))
   FPRF[kept_variants] = all_mut_table$FPprob
-  
+
   # annotate the VCF with FPRF statistic
   geno(header(all_calls))["FPRF",]=list("A","Float","False Probability of being a variant for a trained Random-Forest model")
   geno(all_calls)$FPRF = matrix(data=FPRF, nrow=nrow(all_calls), byrow = T)
-  
+
   # write out the annotated VCF file
   con = file(out_vcf, open = "a")
   writeVcf(all_calls, con)
   close(con)
   all_calls = readVcf(vcf, genome)
 }
-
-
