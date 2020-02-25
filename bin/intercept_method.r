@@ -26,6 +26,7 @@ if(! is.null(args$help)) {
       --genome                    - genome version (default=hg18)
       --sm                        - sample identifier (default=input vcf file name)
       --germline_mutations        - txt file containing germline mutations (chr pos ref alt sm)
+      --minQVAL                   - filtering calls with QVAL<minQVAL (default=50)
 
       example: Rscript intercept_method.r --vcf=file.bgz \n\n")
 
@@ -43,6 +44,7 @@ system(paste("mkdir -p",output_folder,sep=" "))
 if(is.null(args$genome)) {genome="hg18"} else {genome=args$genome}
 if(is.null(args$sm)) {sm=substr(basename(vcf), 1, 21)} else {sm=args$sm}
 if(is.null(args$germline_mutations)) {germline_mutations=NULL} else {germline_mutations=as.character(read.table(args$germline_mutations,h=F)[,1])}
+if(is.null(args$minQVAL)) {minQVAL=50} else {minQVAL=args$minQVAL}
 
 # loading required libraries
 suppressMessages(library(VariantAnnotation))
@@ -68,11 +70,13 @@ calls = readVcf(vcf, genome)
 
 while(dim(calls)[1] != 0){
   print(paste("Starting a new chunk at:", date(), sep=" "))
+  print(paste("Number of mutations in the chunk:", nrow(calls), sep=" "))
   chrs = as.character(seqnames(rowRanges(calls,"seqnames")))
   human_chrs = c("chr1", "chr2", "chr3", "chr4", "chr5", "chr6", "chr7", "chr8", "chr9", "chr10", "chr11", "chr12", "chr13", "chr14",
                  "chr15", "chr16", "chr17", "chr18", "chr19", "chr20", "chr21", "chr22","chrX", "chrY")
   calls = calls[which(chrs %in% human_chrs),]
   seqlevels(calls) = human_chrs
+  calls = calls[which(apply(geno(calls, "QVAL"), 1, max) >= minQVAL), ] # here can't use QUAL if the vcf was separated into different pieces (QVAL is not recalculated)
   
   # remove germline mutations if in input
   if(!is.null(germline_mutations)) calls = calls[which(! rownames(calls) %in% germline_mutations),]
@@ -90,7 +94,7 @@ while(dim(calls)[1] != 0){
   
   # get only non na mutations i.e. mutations with a FPRF value so for which we have apply the model (typically QVAL>50)
   all_fdr_tot = all_fdr1[which(!is.na(all_fdr1))]
-  all_muts_tot = all_mut2[which(!is.na(all_mut2))]
+  all_muts_tot = all_mut2[which(!is.na(all_fdr1))]
   
   if(! exists("all_fdr")) {all_fdr=all_fdr_tot} else {all_fdr = c(all_fdr, all_fdr_tot)}
   if(! exists("all_muts")) {all_muts=all_muts_tot} else {all_muts = c(all_muts, all_muts_tot)}
