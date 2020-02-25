@@ -88,16 +88,6 @@ while(dim(all_calls)[1] != 0) {
   
   exac_all = rep(info(all_calls)$ExAC_ALL, each=n_samples)[kept_variants]
 
-  #nb_normals = unlist(mclapply(1:nrow(all_calls), function(i){
-  #  print(i)
-  #  d = all_calls[i,grepl("BN-", colnames(all_calls))]
-  #  dp = geno(d)$DP
-  #  if(length(which(dp>=10)) == sum(grepl("BN-", colnames(all_calls)))) {
-  #    qval = geno(d)$QVAL
-  #    sum(qval>=minQVAL)
-  #  } else { NA }
-  #}))
-  
   # assign features
   for (f in features){
     if( f %in% names(geno(all_calls))){ # start with genotype because a variable can have same name in both geno and info (prioritize geno)
@@ -111,6 +101,7 @@ while(dim(all_calls)[1] != 0) {
     }
   }
   if( ! ethnicity ){
+    print("INFO: using recurrence of mutation to build the sets of TP/FP")
     normal_calls = all_calls[,which(grepl("BN-", colnames(all_calls)))]
     nbq = apply(geno(normal_calls)[["QVAL"]], 1, function(r) length(which(r>=minQVAL)))
     all_nbq = rep(nbq, each = n_samples)[kept_variants]
@@ -121,6 +112,7 @@ while(dim(all_calls)[1] != 0) {
   }
   
   if( ethnicity ){
+    print("INFO: using ethnicity of the sample to build the sets of TP/FP")
     # assign status
     all_mut_table$status = NA # status as NA is for variants not used in the training
     all_mut_table[which(sm_ethn>=0.99),"status"] = "TP" # here add & exac_all>=0.001 if want to filter rare variants
