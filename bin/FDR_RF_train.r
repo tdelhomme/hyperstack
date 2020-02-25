@@ -107,7 +107,7 @@ while(dim(all_calls)[1] != 0) {
     all_nbq = rep(nbq, each = n_samples)[kept_variants]
     # assign status
     all_mut_table$status = NA # status as NA is for variants not used in the training
-    all_mut_table[which(all_nbq>=2),"status"] = "TP" # if found in at least 2 normal cells
+    all_mut_table[which(all_nbq>=3),"status"] = "TP" # if found in at least 2 normal cells
     all_mut_table[which(all_nbq==1 & (exac_all == 0 | is.na(exac_all))),"status"] = "FP" # if found in only 1 normal cell
   }
 
