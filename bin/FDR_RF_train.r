@@ -23,6 +23,7 @@ if(! is.null(args$help)) {
       --minQVAL                   - filtering calls with QVAL<minQVAL (default=50)
       --features                  - vcf features to train the model
                                     (default=QVAL,AO,AF,DP,ERR,QUAL,RVSB,FS)
+      --ethnicity                 - to use ethnicity to train (use --ethnicity=TRUE)
 
       example: Rscript FDR_RF_train.r --vcf=myvcf.bgz \n\n")
 
@@ -36,6 +37,7 @@ system(paste("mkdir -p",output_folder,sep=" "))
 out_vcf = paste(output_folder, "/", paste( sub(".vcf.gz", "", sub('.vcf.bgz', '', basename(vcf))), "RF_needlestack.vcf", sep="_"), sep="")
 if(is.null(args$minQVAL)) {minQVAL=50} else {minQVAL=args$minQVAL}
 if(is.null(args$features)) {features=c("QVAL","AO","AF","DP","ERR","QUAL","RVSB","FS")} else {features=as.character(unlist(strsplit(args$features,",")))}
+if(is.null(args$ethnicity)) {ethnicity = FALSE} else {ethnicity = TRUE}
 
 suppressMessages(library(VariantAnnotation))
 suppressMessages(library(randomForest))
@@ -95,7 +97,7 @@ while(dim(all_calls)[1] != 0) {
   #    sum(qval>=minQVAL)
   #  } else { NA }
   #}))
-
+  
   # assign features
   for (f in features){
     if( f %in% names(geno(all_calls))){ # start with genotype because a variable can have same name in both geno and info (prioritize geno)
@@ -108,11 +110,22 @@ while(dim(all_calls)[1] != 0) {
       }
     }
   }
-
-  # assign status
-  all_mut_table$status = NA # status as NA is for variants not used in the training
-  all_mut_table[which(sm_ethn>=0.99),"status"] = "TP" # here add & exac_all>=0.001 if want to filter rare variants
-  all_mut_table[which(other_ethn >=0.99),"status"] = "FP" # here too
+  if( ! ethnicity ){
+    normal_calls = all_calls[,which(grepl("BN-", colnames(all_calls)))]
+    nbq = apply(geno(normal_calls)[["QVAL"]], 1, function(r) length(which(r>=minQVAL)))
+    all_nbq = rep(nbq, each = n_samples)[kept_variants]
+    # assign status
+    all_mut_table$status = NA # status as NA is for variants not used in the training
+    all_mut_table[which(all_nbq>=2),"status"] = "TP" # if found in at least 2 normal cells
+    all_mut_table[which(all_nbq==1),"status"] = "FP" # if found in only 1 normal cell
+  }
+  
+  if( ethnicity ){
+    # assign status
+    all_mut_table$status = NA # status as NA is for variants not used in the training
+    all_mut_table[which(sm_ethn>=0.99),"status"] = "TP" # here add & exac_all>=0.001 if want to filter rare variants
+    all_mut_table[which(other_ethn >=0.99),"status"] = "FP" # here too
+  }
 
   # correct rvsb feature
   if("RVSB" %in% features) all_mut_table[which(all_mut_table$RVSB <0.5),"RVSB"]=0.5
