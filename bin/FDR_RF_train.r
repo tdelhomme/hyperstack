@@ -141,7 +141,7 @@ for(f in features) {
 rf = randomForest(as.factor(status) ~ .,
                   data = train_table,
                   importance = TRUE, # to allow us to inspect variable importance
-                  ntree = 5000, sampsize = as.numeric(table(train_table$status)["TP"]), probs=T)
+                  ntree = 5000, sampsize = as.numeric(table(train_table$status)["TP"]), probs=T, mtry = (length(colnames(train_table)) -1))
 save(rf, file=paste(output_folder,"/RF_needlestack.Rdata",sep=""))
 
 # compute a ROC curve from k-fold cross validation
@@ -155,17 +155,18 @@ for(i in 1:10){
   train = train_table[-folds[[i]],]
 
   train$old_status=train$status; test$old_status=test$status
-  train$status = 0 ; train[which(train$old_status=="TP"),"status"] = 1
-  test$status = 0 ; test[which(test$old_status=="TP"),"status"] = 1
+  train$status = 0 ; train[which(train$old_status=="FP"),"status"] = 1 # FP are status 1
+  test$status = 0 ; test[which(test$old_status=="FP"),"status"] = 1 # FP are status 1
   rf_fold = randomForest(as.factor(status) ~ ., data = train[,c(features,"status")], importance = TRUE,
-                         ntree = 500, sampsize = as.numeric(table(train$status)["1"]), probs=T)
-  prediction = predict(rf_fold, test, type="prob")[,2]
+                         ntree = 500, sampsize = min(as.numeric(table(train$status))), probs=T, mtry = (length(colnames(train)) -2))
+  prediction = predict(rf_fold, test, type="prob")[,"1"] # should be sure that we take the column corresponding to the false positives
   all_pred_rf = c(all_pred_rf, prediction)
   all_status_rf = c(all_status_rf, test$status)
 }
 
 perf = performance( prediction( all_pred_rf, all_status_rf ), "rec" ,"spec") #sens in y and tdr in x
 plot(perf, colorize=T, lwd=3, xlab="specificity", ylab="sensitivity", xaxt='n')
+# roc corresponds to the accuracy to recognize the false positive, not true ones (so it is not an accuracy of the calling but of the classifier)
 auc = performance( prediction( all_pred_rf, all_status_rf ), "auc" )@y.values[[1]]
 text(0.98, 1, paste("auc=",round(auc,3)))
 garbage <- dev.off()
