@@ -74,7 +74,7 @@ while(dim(all_calls)[1] != 0) {
   if("RVSB" %in% features) all_mut_table[which(all_mut_table$RVSB <0.5),"RVSB"]=0.5
 
   # apply the random forest model
-  all_mut_table$FPprob = predict(rf, all_mut_table, type="prob")[,"0"] # extract probability to be false to have the FPR
+  all_mut_table$FPprob = predict(rf, all_mut_table, type="prob")[,"FP"] # extract probability to be false to have the FPR
   FPRF = rep(NA, length(rep(rownames(all_calls), each=n_samples)))
   FPRF[kept_variants] = all_mut_table$FPprob
 
