@@ -129,6 +129,11 @@ while(dim(all_calls)[1] != 0) {
   all_calls = readVcf(vcf, genome)
 }
 
+# re-equilibrate the classes, otherwise the random forest with give uncalibrated probabilities
+# i.e. the the point that maximize the sens/spec will not be at 0.5 but at x=proportion of FP
+train_table = train_table[c(which(train_table$status=="TP"), 
+                            sample(which(train_table$status=="FP"), length(which(train_table$status=="TP")))),]
+
 #plots
 pdf(paste(output_folder,"/RF_plots.pdf",sep=""),8,8)
 par(mfrow=c(2,2))
