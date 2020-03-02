@@ -124,6 +124,7 @@ for(sub in TRIPLETS_96){
 
 # plot the results and output the estimated robust linear regression
 list_mod = list()
+list_r2 = list()
 if(! no_plots) pdf(paste(output_folder, "/local_fdrs_",sm,"_",mutation_type,".pdf", sep=""), 12, 10)
 par(mfrow=c(2,3),oma = c(0, 0, 2, 0))
 for(sub in TRIPLETS_96){
@@ -136,6 +137,7 @@ for(sub in TRIPLETS_96){
     msg.UCV <- "XXX" # to resolve a bug, see https://stackoverflow.com/questions/56334077
     mod <- robust::lmRob(Pc ~ Fd, data = data.frame(Pc=pcts, Fd=fdrs))
     list_mod[[sub]] = ifelse(as.numeric(mod$coefficients["(Intercept)"]) < 0 , 0, as.numeric(mod$coefficients["(Intercept)"]))
+    list_r2[[sub]] = mod$r.squared
     abline(b = as.numeric(mod$coefficients["Fd"]), a = as.numeric(mod$coefficients["(Intercept)"]), col="red", lwd=2)
     for(i in 1:(nrow(dat_counts)-1)){
       wald1 = get(paste("wald",sub,sep="_"))[[i]]
@@ -143,10 +145,12 @@ for(sub in TRIPLETS_96){
       segments(x0=fdr_ranges[i] + by_par/2, x1=fdr_ranges[i+1] + by_par/2, y0=wald1[3], y1=wald2[3], lty=2)
       segments(x0=fdr_ranges[i] + by_par/2, x1=fdr_ranges[i+1] + by_par/2, y0=wald1[2], y1=wald2[2], lty=2)
     }
-  } else {list_mod[[sub]] = 0}
+  } else {list_mod[[sub]] = 0 ; list_r2[[sub]] = NA}
 } ; mtext(paste(sm,mutation_type,sep=" - "), outer = TRUE, cex = 1.5)
 
 # return the list of estimated linear models for each substitution
 assign(paste("rlm_ITC",sm,mutation_type,sep="_"), list_mod)
 save(list = ls(pattern="rlm_ITC_"), file=paste(output_folder,"/","rlm","_",sm,"_",mutation_type,"_ITC.Rdata",sep=""))
+assign(paste("r2_ITC",sm,mutation_type,sep="_"), list_r2)
+save(list = ls(pattern="r2_ITC_"), file=paste(output_folder,"/","r2","_",sm,"_",mutation_type,"_ITC.Rdata",sep=""))
 if(! no_plots) dev.off()
