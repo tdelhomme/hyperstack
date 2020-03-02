@@ -46,7 +46,7 @@ if (params.help) {
     log.info ''
     log.info 'Optional arguments:'
     log.info '    --output_folder                FOLDER         Output folder (default: needlestack-ITC_result).'
-    log.info '    --germline_file                FOLDER         Txt file containing germlines mutations (one per line, format:  chr1:1245716_C/T).'
+    log.info '    --germline_file                FOLDER         Txt file containing germlines mutations (one per line, format: chr1:1245716_C/T).'
     log.info 'Flags:'
     log.info '    --help                                        Display this message'
     log.info ''

@@ -100,6 +100,7 @@ while(dim(all_calls)[1] != 0) {
       }
     }
   }
+
   if( ! ethnicity ){
     print("INFO: using recurrence of mutation to build the sets of TP/FP")
     normal_calls = all_calls[,which(grepl("BN-", colnames(all_calls)))]
@@ -110,7 +111,7 @@ while(dim(all_calls)[1] != 0) {
     all_mut_table[which(all_nbq>=3),"status"] = "TP" # if found in at least 2 normal cells
     all_mut_table[which(all_nbq==1 & (exac_all == 0 | is.na(exac_all))),"status"] = "FP" # if found in only 1 normal cell
   }
-
+  
   if( ethnicity ){
     print("INFO: using ethnicity of the sample to build the sets of TP/FP")
     # assign status
