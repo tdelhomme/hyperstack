@@ -24,6 +24,7 @@ if(! is.null(args$help)) {
       --features                  - vcf features to train the model
                                     (default=QVAL,AO,AF,DP,ERR,QUAL,RVSB,FS)
       --ethnicity                 - to use ethnicity to train (use --ethnicity=TRUE)
+      --mappability_file          - file containing mappability scores for each variant in input vcf (line format: )
 
       example: Rscript FDR_RF_train.r --vcf=myvcf.bgz \n\n")
 
@@ -38,6 +39,12 @@ out_vcf = paste(output_folder, "/", paste( sub(".vcf.gz", "", sub('.vcf.bgz', ''
 if(is.null(args$minQVAL)) {minQVAL=20} else {minQVAL=args$minQVAL}
 if(is.null(args$features)) {features=c("QVAL","AO","AF","DP","ERR","QUAL","RVSB","FS")} else {features=as.character(unlist(strsplit(args$features,",")))}
 if(is.null(args$ethnicity)) {ethnicity = FALSE} else {ethnicity = TRUE}
+if(is.null(args$mappability_file)) {mappablity = FALSE} else {
+  mappablity = TRUE
+  map_dat = read.table(args$mappability_file, header = T, stringsAsFactors = F)
+  map_vect = map_dat$MAPPABILITY
+  names(map_vect) = paste(map_dat$CONTIG, map_dat$START, sep="-")
+}
 
 suppressMessages(library(VariantAnnotation))
 suppressMessages(library(randomForest))
@@ -50,6 +57,7 @@ all_calls = readVcf(vcf, genome)
 
 while(dim(all_calls)[1] != 0) {
   print("new chunk")
+  
   # in case minQVAL is lower than --min_qval used for the calling
   # don't use QUAL if the vcf was separated into different pieces (QVAL is not recalculated)
   # all_calls = all_calls[which(apply(geno(all_calls, "QVAL"), 1, max) >= minQVAL), ]
@@ -100,6 +108,12 @@ while(dim(all_calls)[1] != 0) {
       }
     }
   }
+  
+  if(mappability){
+    id_sub = paste(as.character(seqnames(rowRanges(all_calls,"seqnames"))), start(ranges(rowRanges(all_calls,"seqnames"))), sep="-")
+    map_scores = as.numeric(map_vect[id_sub])
+    all_mut_table[,"CRGmap"] = rep(map_scores, each=n_samples)[kept_variants]
+  }
 
   if( ! ethnicity ){
     print("INFO: using recurrence of mutation to build the sets of TP/FP")
@@ -111,7 +125,7 @@ while(dim(all_calls)[1] != 0) {
     all_mut_table[which(all_nbq>=3),"status"] = "TP" # if found in at least 2 normal cells
     all_mut_table[which(all_nbq==1 & (exac_all == 0 | is.na(exac_all))),"status"] = "FP" # if found in only 1 normal cell
   }
-  
+    
   if( ethnicity ){
     print("INFO: using ethnicity of the sample to build the sets of TP/FP")
     # assign status
