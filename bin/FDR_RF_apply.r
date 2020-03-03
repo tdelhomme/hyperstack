@@ -24,6 +24,7 @@ if(! is.null(args$help)) {
       --minQVAL                   - filtering calls with QVAL<minQVAL (default=20)
       --features                  - vcf features used to train the RF model
                                     (default=QVAL,AO,AF,DP,ERR,QUAL,RVSB,FS)
+      --mappability_file          - file containing mappability scores for each variant in input vcf (line format: )
 
       example: Rscript FDR_RF_apply.r --vcf=myvcf.bgz --model=myRF.Rdata \n\n")
 
@@ -39,6 +40,13 @@ system(paste("mkdir -p",output_folder,sep=" "))
 out_vcf = paste(output_folder, "/", paste( sub(".vcf.gz", "", sub('.vcf.bgz', '', basename(vcf))), "RF_needlestack.vcf", sep="_"), sep="")
 if(is.null(args$features)) {features=c("QVAL","AO","AF","DP","ERR","QUAL","RVSB","FS")} else {features=as.character(unlist(strsplit(args$features,",")))}
 if(is.null(args$minQVAL)) {minQVAL=20} else {minQVAL=args$minQVAL}
+if(is.null(args$mappability_file)) {mappability = FALSE} else {
+  print("INFO: mappability scores have been provided")
+  mappability = TRUE
+  map_dat = read.table(args$mappability_file, header = T, stringsAsFactors = F)
+  map_vect = map_dat$MAPPABILITY
+  names(map_vect) = paste(map_dat$CONTIG, map_dat$START, sep="-")
+}
 
 suppressMessages(library(VariantAnnotation))
 suppressMessages(library(randomForest))
@@ -70,6 +78,11 @@ while(dim(all_calls)[1] != 0) {
         all_mut_table[,f] = rep(as.data.frame(rowRanges(all_calls)[,f])[,f], each = n_samples)[kept_variants]
       }
     }
+  }
+  if(mappability){
+    id_sub = paste(as.character(seqnames(rowRanges(all_calls,"seqnames"))), start(ranges(rowRanges(all_calls,"seqnames"))), sep="-")
+    map_scores = as.numeric(map_vect[id_sub])
+    all_mut_table[,"CRGmap"] = rep(map_scores, each=n_samples)[kept_variants]
   }
   if("RVSB" %in% features) all_mut_table[which(all_mut_table$RVSB <0.5),"RVSB"]=0.5
 
