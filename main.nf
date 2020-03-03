@@ -46,7 +46,8 @@ if (params.help) {
     log.info ''
     log.info 'Optional arguments:'
     log.info '    --output_folder                FOLDER         Output folder (default: needlestack-ITC_result).'
-    log.info '    --germline_file                FOLDER         Txt file containing germlines mutations (one per line, format: chr1:1245716_C/T).'
+    log.info '    --germline_file                FILE           Txt file containing germlines mutations (one per line, format: chr1:1245716_C/T).'
+    log.info '    --mappability_file             FILE           Txt file containing mappability scores (can use gatk+vcf)(one per line, format: CONTIG	START	END	MAPPABILITY).'
     log.info 'Flags:'
     log.info '    --help                                        Display this message'
     log.info ''
@@ -57,6 +58,7 @@ params.train_vcf = null
 params.apply_vcf = null
 params.output_folder = "needlestack-ITC_result"
 params.germline_file = "NO_FILE"
+params.mappability_file = "NO_FILE"
 
 if(params.train_vcf == null | params.apply_vcf == null ){
   exit 1, "Please specify each of the following parameters: --train_vcf, --apply_vcf and --gold_list"
@@ -67,6 +69,7 @@ train_tbi = file(params.train_vcf + '.tbi')
 apply = Channel.fromPath(params.apply_vcf).view { "value: $it" }
 apply_tbi = file(params.apply_vcf + '.tbi')
 germline_file = file(params.germline_file)
+mappability_file = file(params.mappability_file)
 
 process training {
 
@@ -82,8 +85,9 @@ process training {
   file "*.Rdata" into rdata
 
   shell:
+  if (params.mappability_file!="NO_FILE") { mappability_par="--mappability_file=$mappability_file" } else { mappability_par="" }
   '''
-  Rscript !{baseDir}/bin/FDR_RF_train.r --vcf=!{t}
+  Rscript !{baseDir}/bin/FDR_RF_train.r --vcf=!{t} !{mappability_par}
   '''
 }
 
@@ -100,8 +104,9 @@ process application {
   file "*.vcf" into vcfapply
 
   shell:
+  if (params.mappability_file!="NO_FILE") { mappability_par="--mappability_file=$mappability_file" } else { mappability_par="" }
   '''
-  Rscript !{baseDir}/bin/FDR_RF_apply.r --vcf=!{a} --model=!{model}
+  Rscript !{baseDir}/bin/FDR_RF_apply.r --vcf=!{a} --model=!{model} !{mappability_par}
   '''
 }
 

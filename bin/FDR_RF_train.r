@@ -40,7 +40,8 @@ if(is.null(args$minQVAL)) {minQVAL=20} else {minQVAL=args$minQVAL}
 if(is.null(args$features)) {features=c("QVAL","AO","AF","DP","ERR","QUAL","RVSB","FS")} else {features=as.character(unlist(strsplit(args$features,",")))}
 if(is.null(args$ethnicity)) {ethnicity = FALSE} else {ethnicity = TRUE}
 if(is.null(args$mappability_file)) {mappablity = FALSE} else {
-  mappablity = TRUE
+  print("INFO: mappability scores have been provided")
+  mappability = TRUE
   map_dat = read.table(args$mappability_file, header = T, stringsAsFactors = F)
   map_vect = map_dat$MAPPABILITY
   names(map_vect) = paste(map_dat$CONTIG, map_dat$START, sep="-")
