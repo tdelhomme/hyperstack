@@ -137,7 +137,7 @@ for(sub in TRIPLETS_96){
     msg.UCV <- "XXX" # to resolve a bug, see https://stackoverflow.com/questions/56334077
     mod <- robust::lmRob(Pc ~ Fd, data = data.frame(Pc=pcts, Fd=fdrs))
     list_mod[[sub]] = ifelse(as.numeric(mod$coefficients["(Intercept)"]) < 0 , 0, as.numeric(mod$coefficients["(Intercept)"]))
-    list_r2[[sub]] = mod$r.squared
+    list_r2[[sub]] = as.numeric(cor.test(pcts, as.numeric(mod$coefficients["Fd"]) * fdrs + as.numeric(mod$coefficients["(Intercept)"]))$estimate)
     abline(b = as.numeric(mod$coefficients["Fd"]), a = as.numeric(mod$coefficients["(Intercept)"]), col="red", lwd=2)
     for(i in 1:(nrow(dat_counts)-1)){
       wald1 = get(paste("wald",sub,sep="_"))[[i]]
