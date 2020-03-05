@@ -25,7 +25,9 @@ if(! is.null(args$help)) {
                                     (default=QVAL,AO,AF,DP,ERR,QUAL,RVSB,FS)
       --ethnicity                 - to use ethnicity to train (use --ethnicity=TRUE)
       --mappability_file          - file containing mappability scores for each variant in input vcf (line format: )
-
+      --normal_id_pattern         - pattern to identify normal samples (Default: BN, as in Li et al 2012)
+      --min_normal_cells          - minimum nb of normal samples to set a call as TP (Default: 3, can be 1 for bulk)
+      
       example: Rscript FDR_RF_train.r --vcf=myvcf.bgz \n\n")
 
   q(save="no")
@@ -39,6 +41,8 @@ out_vcf = paste(output_folder, "/", paste( sub(".vcf.gz", "", sub('.vcf.bgz', ''
 if(is.null(args$minQVAL)) {minQVAL=20} else {minQVAL=args$minQVAL}
 if(is.null(args$features)) {features=c("QVAL","AO","AF","DP","ERR","QUAL","RVSB","FS")} else {features=as.character(unlist(strsplit(args$features,",")))}
 if(is.null(args$ethnicity)) {ethnicity = FALSE} else {ethnicity = TRUE}
+if(is.null(args$normal_id_pattern)) {normal_id_pattern = "BN"} else {normal_id_pattern = a.character(args$normal_id_pattern)}
+if(is.null(args$min_normal_cells)) {min_normal_cells=3} else {min_normal_cells=args$min_normal_cells}
 if(is.null(args$mappability_file)) {mappability = FALSE} else {
   print("INFO: mappability scores have been provided")
   mappability = TRUE
@@ -118,12 +122,12 @@ while(dim(all_calls)[1] != 0) {
 
   if( ! ethnicity ){
     print("INFO: using recurrence of mutation to build the sets of TP/FP")
-    normal_calls = all_calls[,which(grepl("BN-", colnames(all_calls)))]
+    normal_calls = all_calls[,which(grepl(normal_id_pattern, colnames(all_calls)))]
     nbq = apply(geno(normal_calls)[["QVAL"]], 1, function(r) length(which(r>=minQVAL)))
     all_nbq = rep(nbq, each = n_samples)[kept_variants]
     # assign status
     all_mut_table$status = NA # status as NA is for variants not used in the training
-    all_mut_table[which(all_nbq>=3),"status"] = "TP" # if found in at least 2 normal cells
+    all_mut_table[which(all_nbq>=min_normal_cells),"status"] = "TP" # if found in at least 3 normal cells
     all_mut_table[which(all_nbq==1 & (exac_all == 0 | is.na(exac_all))),"status"] = "FP" # if found in only 1 normal cell
   }
     
