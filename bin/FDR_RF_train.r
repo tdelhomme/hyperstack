@@ -33,6 +33,8 @@ if(! is.null(args$help)) {
   q(save="no")
 }
 
+set.seed(98)
+
 if(is.null(args$vcf)) {stop("Option --vcf should be provided")} else{vcf=args$vcf}
 if(is.null(args$genome)) {genome="hg18"} else {genome=args$genome}
 if(is.null(args$output_folder)) { output_folder="."} else {output_folder = args$output_folder}

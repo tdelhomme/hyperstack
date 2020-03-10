@@ -31,6 +31,8 @@ if(! is.null(args$help)) {
   q(save="no")
 }
 
+set.seed(98)
+
 if(is.null(args$vcf)) {stop("Option --vcf should be provided")} else{vcf=args$vcf}
 if(is.null(args$model)) {stop("Option --model should be provided")} else{model=args$model}
 load(model) # the model whould be an object named "rf"
