@@ -29,7 +29,7 @@ if(! is.null(args$help)) {
       --minQVAL                   - filtering calls with QVAL<minQVAL (default=20)
 
       example: Rscript intercept_method.r --vcf=file.bgz \n\n")
-
+  
   q(save="no")
 }
 
@@ -77,46 +77,35 @@ while(dim(calls)[1] != 0){
   calls = calls[which(chrs %in% human_chrs),]
   seqlevels(calls) = human_chrs
   calls = calls[which(apply(geno(calls, "QVAL"), 1, max) >= minQVAL), ] # here can't use QUAL if the vcf was separated into different pieces (QVAL is not recalculated)
-
+  
   # remove germline mutations if in input
   if(!is.null(germline_mutations)) calls = calls[which(! rownames(calls) %in% germline_mutations),]
-
+  
   # filter the calls on the requested mutation type
   #refgene = unlist(info(calls)$Func.refGene)
   #if(mutation_type != "all") calls = calls[which(refgene == mutation_type)]
-
+  
   # get the 3nucleotides context
   nut3_context = type_context(rowRanges(calls), ref_genome)
   all_mut1 = paste(substr(nut3_context$context,1,1), "[", nut3_context$types, "]", substr(nut3_context$context,3,3), sep = "")
   all_mut2 = rep(all_mut1, each = length(samples(header(calls))))
   # compute the FDRs
   all_fdr1 = as.vector(unlist(t(geno(calls)[["FPRF"]]))) # use the statistic given by needlestack
-
+  
   # get only non na mutations i.e. mutations with a FPRF value so for which we have apply the model (typically QVAL>20)
   all_fdr_tot = all_fdr1[which(!is.na(all_fdr1))]
   all_muts_tot = all_mut2[which(!is.na(all_fdr1))]
-
+  
   if(! exists("all_fdr")) {all_fdr=all_fdr_tot} else {all_fdr = c(all_fdr, all_fdr_tot)}
   if(! exists("all_muts")) {all_muts=all_muts_tot} else {all_muts = c(all_muts, all_muts_tot)}
-
+  
   calls = readVcf(vcf, genome)
 }
 
 # initiate the results
-#by_par = 0.15
-#fdr_ranges = seq(min_fdr, max_fdr + by_par, by=by_par)
-#fdrs = fdr_ranges[1:(length(fdr_ranges)-1)] + by_par/2
-
-nb_lim = 5 + 1
-itv_fdr = all_fdr[order(all_fdr)]
-itv_fdr = itv_fdr[which(itv_fdr >= min_fdr & itv_fdr <= max_fdr)]
-intervals = split(itv_fdr, cut(seq_along(itv_fdr), nb_lim))
-fdr_ranges = unlist(lapply( (1:nb_lim), function(p){
-  if(p==max(nb_lim)) { intervals[[p]][length(intervals[[p]])]  } else { intervals[[p]][1] }
-}))
-fdrs = unlist(lapply(1:(nb_lim-1), function(p){
-  (fdr_ranges[p] + fdr_ranges[p+1]) / 2
-}))
+by_par = 0.15
+fdr_ranges = seq(min_fdr, max_fdr + by_par, by=by_par)
+fdrs = fdr_ranges[1:(length(fdr_ranges)-1)] + by_par/2
 
 dat_counts = dat_total = as.data.frame(matrix(0, nrow = length(fdr_ranges)-1, ncol = length(TRIPLETS_96)))
 colnames(dat_counts) = colnames(dat_total) = TRIPLETS_96
