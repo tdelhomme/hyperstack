@@ -103,10 +103,20 @@ while(dim(calls)[1] != 0){
 }
 
 # initiate the results
-by_par = 0.15
-fdr_ranges = seq(min_fdr, max_fdr + by_par, by=by_par)
+#by_par = 0.15
+#fdr_ranges = seq(min_fdr, max_fdr + by_par, by=by_par)
+#fdrs = fdr_ranges[1:(length(fdr_ranges)-1)] + by_par/2
 
-fdrs = fdr_ranges[1:(length(fdr_ranges)-1)] + by_par/2
+nb_lim = 5 + 1
+itv_fdr = all_fdr[order(all_fdr)]
+itv_fdr = itv_fdr[which(itv_fdr >= min_fdr & itv_fdr <= max_fdr)]
+intervals = split(itv_fdr, cut(seq_along(itv_fdr), nb_lim))
+fdr_ranges = unlist(lapply( (1:nb_lim), function(p){
+  if(p==max(nb_lim)) { intervals[[p]][length(intervals[[p]])]  } else { intervals[[p]][1] }
+}))
+fdrs = unlist(lapply(1:(nb_lim-1), function(p){
+  (fdr_ranges[p] + fdr_ranges[p+1]) / 2
+}))
 
 dat_counts = dat_total = as.data.frame(matrix(0, nrow = length(fdr_ranges)-1, ncol = length(TRIPLETS_96)))
 colnames(dat_counts) = colnames(dat_total) = TRIPLETS_96
