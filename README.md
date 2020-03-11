@@ -3,7 +3,9 @@
 ## Description
 Nextflow pipeline to run the intercept method on needlestack calling with a step of FDR computation with ML.
 
-This pipeline first trains a random forest algorithm based on ethnicity of the samples in the VCF (TP are variants reported in the same ethnicity and FP are variants reported in another ethnicity, based on 1000 genome project database).
+This pipeline first trains a random forest algorithm based a set of true and false positve variant, defined with one of the following method:
+  * on ethnicity of the samples in the VCF: TP are variants reported in the same ethnicity and FP are variants reported in another ethnicity, based on 1000 genome project database
+  * on recurrence of mutations: variant is TP if observed >= x times in other samples (e.g. normal single cells) and FP is observed only once
 
 Then it applies this random forest on a second VCF (new genotype statistic: FPRF).
 
