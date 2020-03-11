@@ -15,6 +15,7 @@ if(! is.null(args$help)) {
 
       Mandatory arguments:
       --vcf                       - VCF to train/apply the RF model (should be annotated with annovar and in bgzip format/indexed with tabix)
+      --bin_path                  - path to bin folder containing functions to load
       --help                      - print this text
 
       Optional arguments:
@@ -36,6 +37,7 @@ if(! is.null(args$help)) {
 set.seed(98)
 
 if(is.null(args$vcf)) {stop("Option --vcf should be provided")} else{vcf=args$vcf}
+if(is.null(args$bin_path)) {stop("Option --bin_path should be provided")} else{bin_path=args$bin_path}
 if(is.null(args$genome)) {genome="hg18"} else {genome=args$genome}
 if(is.null(args$output_folder)) { output_folder="."} else {output_folder = args$output_folder}
 system(paste("mkdir -p",output_folder,sep=" "))
@@ -58,6 +60,7 @@ suppressMessages(library(randomForest))
 suppressMessages(library(caret))
 suppressMessages(library(ROCR))
 suppressMessages(library(parallel))
+source(paste(bin_path,"/functions.r",sep=""))
 
 vcf = open(VcfFile(vcf, yieldSize=500000))
 all_calls = readVcf(vcf, genome)
@@ -146,6 +149,15 @@ while(dim(all_calls)[1] != 0) {
 
   # return the table used for training
   train_table_chunk = all_mut_table[which(!is.na(all_mut_table$status)),]
+  
+  # add the nbVarWin statistic used in the random forest model
+  #sm =  unlist(lapply(rownames(train_table_chunk), function(r) unlist(strsplit(r,"\\\\"))[2]))
+  #train_table_chunk$NbVarWin = unlist(lapply(1:nrow(train_table_chunk), function(i) {
+  #  print(paste(i, nrow(train_table_chunk), sep ="/"))
+  #  s = unlist(strsplit(rownames(train_table_chunk[i,]),"\\\\"))[2]
+  #  to_NbVarWin(train_table_chunk[which(sm == s),], i)
+  #}))
+  
   if(! exists("train_table")) {train_table=train_table_chunk} else {train_table = rbind(train_table, train_table_chunk)}
 
   all_calls = readVcf(vcf, genome)

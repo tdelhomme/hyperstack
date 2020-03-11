@@ -16,6 +16,7 @@ if(! is.null(args$help)) {
       Mandatory arguments:
       --vcf                       - VCF to apply the RF model (should be annotated with annovar and in bgzip format/indexed with tabix)
       --model                     - a trained random forest model (in .Rdata format)
+      --bin_path                  - path to bin folder containing functions to load
       --help                      - print this text
 
       Optional arguments:
@@ -34,6 +35,7 @@ if(! is.null(args$help)) {
 set.seed(98)
 
 if(is.null(args$vcf)) {stop("Option --vcf should be provided")} else{vcf=args$vcf}
+if(is.null(args$bin_path)) {stop("Option --bin_path should be provided")} else{bin_path=args$bin_path}
 if(is.null(args$model)) {stop("Option --model should be provided")} else{model=args$model}
 load(model) # the model whould be an object named "rf"
 if(is.null(args$genome)) {genome="hg18"} else {genome=args$genome}
@@ -52,6 +54,7 @@ if(is.null(args$mappability_file)) {mappability = FALSE} else {
 
 suppressMessages(library(VariantAnnotation))
 suppressMessages(library(randomForest))
+source(paste(bin_path,"/functions.r",sep=""))
 
 vcf = open(VcfFile(vcf, yieldSize = 500000))
 all_calls = readVcf(vcf, genome)
