@@ -87,7 +87,7 @@ process training {
   shell:
   if (params.mappability_file!="NO_FILE") { mappability_par="--mappability_file=$mappability_file" } else { mappability_par="" }
   '''
-  Rscript !{baseDir}/bin/FDR_RF_train.r --vcf=!{t} !{mappability_par}
+  Rscript !{baseDir}/bin/FDR_RF_train.r --vcf=!{t} !{mappability_par} --bin_path=!{baseDir}/bin
   '''
 }
 
@@ -106,7 +106,7 @@ process application {
   shell:
   if (params.mappability_file!="NO_FILE") { mappability_par="--mappability_file=$mappability_file" } else { mappability_par="" }
   '''
-  Rscript !{baseDir}/bin/FDR_RF_apply.r --vcf=!{a} --model=!{model} !{mappability_par}
+  Rscript !{baseDir}/bin/FDR_RF_apply.r --vcf=!{a} --model=!{model} !{mappability_par} --bin_path=!{baseDir}/bin
   '''
 }
 
