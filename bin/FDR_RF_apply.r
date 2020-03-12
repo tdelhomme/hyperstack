@@ -43,7 +43,7 @@ if(is.null(args$output_folder)) { output_folder="."} else {output_folder = args$
 system(paste("mkdir -p",output_folder,sep=" "))
 out_vcf = paste(output_folder, "/", paste( sub(".vcf.gz", "", sub('.vcf.bgz', '', basename(vcf))), "RF_needlestack.vcf", sep="_"), sep="")
 if(is.null(args$features)) {features=c("QVAL","AO","AF","DP","ERR","QUAL","RVSB","FS")} else {features=as.character(unlist(strsplit(args$features,",")))}
-if(is.null(args$minQVAL)) {minQVAL=20} else {minQVAL=args$minQVAL}
+if(is.null(args$minQVAL)) {minQVAL=10} else {minQVAL=args$minQVAL}
 if(is.null(args$mappability_file)) {mappability = FALSE} else {
   print("INFO: mappability scores have been provided")
   mappability = TRUE

@@ -28,7 +28,7 @@ if(! is.null(args$help)) {
       --mappability_file          - file containing mappability scores for each variant in input vcf (line format: )
       --normal_id_pattern         - pattern to identify normal samples (Default: BN, as in Li et al 2012)
       --min_normal_cells          - minimum nb of normal samples to set a call as TP (Default: 3, can be 1 for bulk)
-      
+
       example: Rscript FDR_RF_train.r --vcf=myvcf.bgz \n\n")
 
   q(save="no")
@@ -42,7 +42,7 @@ if(is.null(args$genome)) {genome="hg18"} else {genome=args$genome}
 if(is.null(args$output_folder)) { output_folder="."} else {output_folder = args$output_folder}
 system(paste("mkdir -p",output_folder,sep=" "))
 out_vcf = paste(output_folder, "/", paste( sub(".vcf.gz", "", sub('.vcf.bgz', '', basename(vcf))), "RF_needlestack.vcf", sep="_"), sep="")
-if(is.null(args$minQVAL)) {minQVAL=20} else {minQVAL=args$minQVAL}
+if(is.null(args$minQVAL)) {minQVAL=10} else {minQVAL=args$minQVAL}
 if(is.null(args$features)) {features=c("QVAL","AO","AF","DP","ERR","QUAL","RVSB","FS")} else {features=as.character(unlist(strsplit(args$features,",")))}
 if(is.null(args$ethnicity)) {ethnicity = FALSE} else {ethnicity = TRUE}
 if(is.null(args$normal_id_pattern)) {normal_id_pattern = "BN"} else {normal_id_pattern = a.character(args$normal_id_pattern)}
@@ -67,7 +67,7 @@ all_calls = readVcf(vcf, genome)
 
 while(dim(all_calls)[1] != 0) {
   print("new chunk")
-  
+
   # in case minQVAL is lower than --min_qval used for the calling
   # don't use QUAL if the vcf was separated into different pieces (QVAL is not recalculated)
   # all_calls = all_calls[which(apply(geno(all_calls, "QVAL"), 1, max) >= minQVAL), ]
@@ -118,7 +118,7 @@ while(dim(all_calls)[1] != 0) {
       }
     }
   }
-  
+
   if(mappability){
     id_sub = paste(as.character(seqnames(rowRanges(all_calls,"seqnames"))), start(ranges(rowRanges(all_calls,"seqnames"))), sep="-")
     map_scores = as.numeric(map_vect[id_sub])
@@ -135,7 +135,7 @@ while(dim(all_calls)[1] != 0) {
     all_mut_table[which(all_nbq>=min_normal_cells),"status"] = "TP" # if found in at least 3 normal cells
     all_mut_table[which(all_nbq==1 & (exac_all == 0 | is.na(exac_all))),"status"] = "FP" # if found in only 1 normal cell
   }
-    
+
   if( ethnicity ){
     print("INFO: using ethnicity of the sample to build the sets of TP/FP")
     # assign status
@@ -149,7 +149,7 @@ while(dim(all_calls)[1] != 0) {
 
   # return the table used for training
   train_table_chunk = all_mut_table[which(!is.na(all_mut_table$status)),]
-  
+
   # add the nbVarWin statistic used in the random forest model
   #sm =  unlist(lapply(rownames(train_table_chunk), function(r) unlist(strsplit(r,"\\\\"))[2]))
   #train_table_chunk$NbVarWin = unlist(lapply(1:nrow(train_table_chunk), function(i) {
@@ -157,7 +157,7 @@ while(dim(all_calls)[1] != 0) {
   #  s = unlist(strsplit(rownames(train_table_chunk[i,]),"\\\\"))[2]
   #  to_NbVarWin(train_table_chunk[which(sm == s),], i)
   #}))
-  
+
   if(! exists("train_table")) {train_table=train_table_chunk} else {train_table = rbind(train_table, train_table_chunk)}
 
   all_calls = readVcf(vcf, genome)
@@ -165,7 +165,7 @@ while(dim(all_calls)[1] != 0) {
 
 # re-equilibrate the classes, otherwise the random forest with give uncalibrated probabilities
 # i.e. the the point that maximize the sens/spec will not be at 0.5 but at x=proportion of FP
-train_table = train_table[c(which(train_table$status=="TP"), 
+train_table = train_table[c(which(train_table$status=="TP"),
                             sample(which(train_table$status=="FP"), length(which(train_table$status=="TP")))),]
 
 #plots
