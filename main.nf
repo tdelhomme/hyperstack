@@ -125,6 +125,7 @@ process extract_samples {
   do
     bcftools view -s ${sample} input.vcf > ${sample}.vcf
   done
+  rm input.vcf
 
   '''
 }
