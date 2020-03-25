@@ -22,7 +22,7 @@ if(! is.null(args$help)) {
       Optional arguments:
       --output_folder             - path to the output folder (default=vcfname_RF_output)
       --genome                    - genome version (default=hg18)
-      --minQVAL                   - filtering calls with QVAL<minQVAL (default=20)
+      --minQVAL                   - filtering calls with QVAL<minQVAL (default=10)
       --features                  - vcf features used to train the RF model
                                     (default=QVAL,AO,AF,DP,ERR,QUAL,RVSB,FS)
       --mappability_file          - file containing mappability scores for each variant in input vcf (line format: )

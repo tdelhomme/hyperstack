@@ -26,7 +26,7 @@ if(! is.null(args$help)) {
       --genome                    - genome version (default=hg18)
       --sm                        - sample identifier (default=input vcf file name)
       --germline_mutations        - txt file containing germline mutations (chr pos ref alt sm)
-      --minQVAL                   - filtering calls with QVAL<minQVAL (default=20)
+      --minQVAL                   - filtering calls with QVAL<minQVAL (default=10)
 
       example: Rscript intercept_method.r --vcf=file.bgz \n\n")
   
@@ -44,7 +44,7 @@ system(paste("mkdir -p",output_folder,sep=" "))
 if(is.null(args$genome)) {genome="hg18"} else {genome=args$genome}
 if(is.null(args$sm)) {sm=substr(basename(vcf), 1, 21)} else {sm=args$sm}
 if(is.null(args$germline_mutations)) {germline_mutations=NULL} else {germline_mutations=as.character(read.table(args$germline_mutations,h=F)[,1])}
-if(is.null(args$minQVAL)) {minQVAL=20} else {minQVAL=args$minQVAL}
+if(is.null(args$minQVAL)) {minQVAL=10} else {minQVAL=args$minQVAL}
 
 # loading required libraries
 suppressMessages(library(VariantAnnotation))
