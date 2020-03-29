@@ -182,8 +182,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.43852551"
-     inkscape:cx="543.04501"
-     inkscape:cy="255.57421"
+     inkscape:cx="162.22338"
+     inkscape:cy="246.45273"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -205,7 +205,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -265,7 +265,7 @@
            x="-95.169365"
            y="-87.082336"
            style="-inkscape-font-specification:arial;font-family:arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;" /></flowRegion><flowPara
-         id="flowPara4569"></flowPara></flowRoot>    <flowRoot
+         id="flowPara4569" /></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot4571"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1000;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -286,7 +286,7 @@
            height="524.36456"
            x="61.580177"
            y="67.80114" /></flowRegion><flowPara
-         id="flowPara4585"></flowPara></flowRoot>    <text
+         id="flowPara4585" /></flowRoot>    <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:9.24638176px;line-height:1.20000005;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.23115955"
        x="49.683372"
@@ -312,7 +312,7 @@
            height="149.28528"
            x="-22.392792"
            y="103.25639" /></flowRegion><flowPara
-         id="flowPara4597"></flowPara></flowRoot>    <flowRoot
+         id="flowPara4597" /></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot4599"
        style="fill:black;fill-opacity:1;stroke:none;font-family:sans-serif;font-style:normal;font-weight:normal;font-size:40px;line-height:1000;letter-spacing:0px;word-spacing:0px"><flowRegion
@@ -322,7 +322,7 @@
            height="153.01741"
            x="-85.839035"
            y="30.479818" /></flowRegion><flowPara
-         id="flowPara4605"></flowPara></flowRoot>    <flowRoot
+         id="flowPara4605" /></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot4607"
        style="fill:black;fill-opacity:1;stroke:none;font-family:sans-serif;font-style:normal;font-weight:normal;font-size:40px;line-height:1000;letter-spacing:0px;word-spacing:0px"><flowRegion
@@ -332,7 +332,7 @@
            height="130.62462"
            x="250.05284"
            y="345.84497" /></flowRegion><flowPara
-         id="flowPara4613"></flowPara></flowRoot>    <flowRoot
+         id="flowPara4613" /></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot4615"
        style="fill:black;fill-opacity:1;stroke:none;font-family:sans-serif;font-style:normal;font-weight:normal;font-size:40px;line-height:1000;letter-spacing:0px;word-spacing:0px"><flowRegion
@@ -342,7 +342,7 @@
            height="324.6955"
            x="244.45465"
            y="297.32724" /></flowRegion><flowPara
-         id="flowPara4621"></flowPara></flowRoot>    <flowRoot
+         id="flowPara4621" /></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot4625"
        style="fill:black;fill-opacity:1;stroke:none;font-family:sans-serif;font-style:normal;font-weight:normal;font-size:40px;line-height:1000;letter-spacing:0px;word-spacing:0px"><flowRegion
@@ -352,7 +352,7 @@
            height="66.760117"
            x="247.73634"
            y="345.68411" /></flowRegion><flowPara
-         id="flowPara4631"></flowPara></flowRoot>    <flowRoot
+         id="flowPara4631" /></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot4649"
        style="fill:black;fill-opacity:1;stroke:none;font-family:sans-serif;font-style:normal;font-weight:normal;font-size:40px;line-height:1000;letter-spacing:0px;word-spacing:0px"><flowRegion
@@ -362,7 +362,7 @@
            height="102.40857"
            x="246.26822"
            y="340.17715" /></flowRegion><flowPara
-         id="flowPara4655"></flowPara></flowRoot>    <flowRoot
+         id="flowPara4655" /></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot4657"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1000;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
@@ -388,51 +388,7 @@
        y="162.17712"
        x="101.49959"
        id="image5371"
-       xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMIAAAEDCAYAAABnItuUAAAABHNCSVQICAgIfAhkiAAACVhJREFU
-eJzt3c9rE/kfgPEnScFDF5Yoi1RRD60uuCCyWw/iL6hiC4Jgby3FQ5f+AdKr4mVZ8CDsxZMgaEHw
-oBd1SYRGsZdKilpEkCUi6u6KKApiBDXZ+R78Wlrrj6bt5DNJnxd8wKbQeSedhxk7kzYVRVHEAlWr
-VW7dusWNGze4efMmk5OT3Lt3j3K5vNAvrTpoa2tj06ZNbNmyhR9//JGff/6ZjRs3hh6rvqIFKBQK
-UX9/fwS4mnAdPnw4KpVKC9lFGsa8Qjh9+nTU2toa/Bvlqs/q6uqKisXiYu97iVJTCLlczgCW8Ort
-7Y2ePXsW174Y1JxCeP36tadArql14cKFuPfLuvtmCKVSyaOAa9YaHh6ux/5ZN18NYWJiIvgL7kru
-6u3tjSqVSr321Vh9MYRisRj8hXYlf3V3dzdFDKkomn0d4f79+3R0dHz6sPRZu3fvJp/Pk8lkQo8y
-b7NCKJfLrFy50othqklXVxdXrlxp2BjSnz5w6NAhI1DNCoUCe/fuDT3G/E0/TyoUCsHPOV2NvXbs
-2BHiFH/BZpwaLV++nJcvXyItxI4dO7h+/XroMWoydWp05swZI9CiGBsbY+fOnaHHqMnUESGVSoWe
-RU2mq6uL0dHR0GPMSRogn8+HnkNNqFAosGfPHqrVauhRvikNH06LpDiMjo6yb9++xMeQqlQqUUtL
-S+g51OS6u7u5fPlyYq8zpG/fvh16Bi0B+Xw+0UeG9Pj4eOgZtEQkOYb0gwcPQs+gJeRjDEmTvnbt
-WugZtMTk83n27NkTeowZUtlsNvJCmkJI0hXo9Lt370LPoCUqSVegU3y4WSo2uVyONWvWxLmJprZs
-2TK2bdvG06dPQ48SmyQcGWIPoVQq0d7eHucmmt6qVat48uRJ6DFiFfp2jFnvR1Dy/Pfff7F+/eHh
-4Vi//lwUCgV6enqC/WjVEMTg4CC5XC70GEGvMxiCePPmDd3d3Vy4cCH0KOTzefbv31/3GAxBUw4c
-OJCIGP7888+6x2AImmGpxmAImiVJMdTrdgxD0GclJYZ8Pk9PT0/s2zEEfVGSYti9e3es2zAEfVVS
-YigUCrHejmEI+qakxDA2NhbbkcEQNCdJieHjLwRYbIagOUtKDKOjo4t+O4YhqCZJiWGxb8cwBNXs
-wIEDnD17NvQYi3o7hiFoXvr6+hIRw2JdgTYEzVszxWAIWpAkxbCQ2zEMQQuWlBgWcjuGIWhRJCmG
-+VxnMAQtmqTEMDo6WvPtGIagRZWUGMbGxmo6MhiCFl1SYvh4BXouDEGxSEoMc/1dq4ag2CQlhrn8
-aNUQFKskxfDrr79+8fOGoNglJYZTp05x5MiRz37OEFQXfX19jIyMhB6D3377jatXr8563BBUNwMD
-A4mIoauri3K5POMxQ1BdJSWGo0ePzvjYEFR3AwMDnD59OugMx48f5/79+1MfG4KCOHjwYPAYjh07
-NvVvQ1AwoWM4efIkz58/BwxBgYWO4dy5c4AhKAFCxvDHH38AhqCECBVDqVTi+fPnhqDkCBXDnTt3
-DEHJEiKGyclJQxCkUqnQI8xw8ODBul50+/vvv2mp29aUWI8ePeKHH37g/fv3oUeZ0tPTw/DwMMeP
-H499W9euXTMEQW9vb+gRgvr33389NZKePHliCBJ4HUECDEECDEECDEECDEECDEECDEECDEECDEEC
-DKEhpNN+m+LmK9wAOjo6Qo/Q9AyhAezatSv0CE3PEBrA9u3bQ4/Q9AyhAcznj+OpNobQADKZDL//
-/nvoMZpaCoji3ECpVKK9vT3OTSwJ1WqVlhbfUBgXjwgNIpPJMDExEXqMpmUIDeSXX34hl8uFHqMp
-GUKD6e7uplgshh6j6RhCA+rs7KRSqXD48OHQozQN/7Pc4MrlMleuXOHSpUucO3du1p9E0twYghLv
-0aNHrFu3LtZteGqkxKvHb+AzBAlDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABD
-kABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABD
-kABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABD
-kABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABD
-kABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABD
-kABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABD
-kABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABD
-kABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABoiXsDpVKJt2/f
-xr0ZNbHHjx/Hvo1Ua2trVC6XY9+QlFTZbJZ0W1tb6DmkoFasWEF63bp1oeeQgmpvbye9devW0HNI
-QW3ZsoX0+vXrQ88hBbV+/XrSnZ2doeeQgurs7CQVRVGUSqVCzyIFE0XRhwtqg4ODoWeRghgaGgL+
-f2V5YGAg6DBSKH19fQAfTo0APD3SUpPNZnnx4gUw7V6jkZGRYANJIZw4cWLq31NHBIDvvvsOb7fQ
-UjD9aACf3H168eLFug8khXD+/PmZD0SfGBwcjACXq2nX0NDQp7t9NOPUCKBarfL99997iqSm1NbW
-xuPHj8lkMjMen/XGnEwmw+TkZN0Gk+ppfHx8VgTwhXeotbe3UywWYx9Kqqe7d++ydu3az39y1snS
-NBMTE8HP51yuxVh379792q4efTWEKIqihw8fRitXrgz+RFyu+ayOjo7o2bNn39rNvx1CFEVRpVKJ
-+vv7gz8pl6uWNTQ0FFUqlbns4nML4aNcLhf8yblc31qtra1RoVCoZdeuLYQo+nB0GBkZibLZbPAn
-7HJNX21tbdHZs2dr3aXnF8J0hUIh6u3tDf4CuJb26u/vj4rF4kJ25dkX1OajWq1y+/ZtxsfHefXq
-FRMTE/z111/8888/vHz5cqFfXiKbzbJ69Wo2bNhAZ2cnq1ev5qeffmLz5s2fvS5Qq/8BtNEvOsFB
-YKsAAAAASUVORK5CYII=
-"
+       xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMIAAAEDCAYAAABnItuUAAAABHNCSVQICAgIfAhkiAAACVhJREFU eJzt3c9rE/kfgPEnScFDF5Yoi1RRD60uuCCyWw/iL6hiC4Jgby3FQ5f+AdKr4mVZ8CDsxZMgaEHw oBd1SYRGsZdKilpEkCUi6u6KKApiBDXZ+R78Wlrrj6bt5DNJnxd8wKbQeSedhxk7kzYVRVHEAlWr VW7dusWNGze4efMmk5OT3Lt3j3K5vNAvrTpoa2tj06ZNbNmyhR9//JGff/6ZjRs3hh6rvqIFKBQK UX9/fwS4mnAdPnw4KpVKC9lFGsa8Qjh9+nTU2toa/Bvlqs/q6uqKisXiYu97iVJTCLlczgCW8Ort 7Y2ePXsW174Y1JxCeP36tadArql14cKFuPfLuvtmCKVSyaOAa9YaHh6ux/5ZN18NYWJiIvgL7kru 6u3tjSqVSr321Vh9MYRisRj8hXYlf3V3dzdFDKkomn0d4f79+3R0dHz6sPRZu3fvJp/Pk8lkQo8y b7NCKJfLrFy50othqklXVxdXrlxp2BjSnz5w6NAhI1DNCoUCe/fuDT3G/E0/TyoUCsHPOV2NvXbs 2BHiFH/BZpwaLV++nJcvXyItxI4dO7h+/XroMWoydWp05swZI9CiGBsbY+fOnaHHqMnUESGVSoWe RU2mq6uL0dHR0GPMSRogn8+HnkNNqFAosGfPHqrVauhRvikNH06LpDiMjo6yb9++xMeQqlQqUUtL S+g51OS6u7u5fPlyYq8zpG/fvh16Bi0B+Xw+0UeG9Pj4eOgZtEQkOYb0gwcPQs+gJeRjDEmTvnbt WugZtMTk83n27NkTeowZUtlsNvJCmkJI0hXo9Lt370LPoCUqSVegU3y4WSo2uVyONWvWxLmJprZs 2TK2bdvG06dPQ48SmyQcGWIPoVQq0d7eHucmmt6qVat48uRJ6DFiFfp2jFnvR1Dy/Pfff7F+/eHh 4Vi//lwUCgV6enqC/WjVEMTg4CC5XC70GEGvMxiCePPmDd3d3Vy4cCH0KOTzefbv31/3GAxBUw4c OJCIGP7888+6x2AImmGpxmAImiVJMdTrdgxD0GclJYZ8Pk9PT0/s2zEEfVGSYti9e3es2zAEfVVS YigUCrHejmEI+qakxDA2NhbbkcEQNCdJieHjLwRYbIagOUtKDKOjo4t+O4YhqCZJiWGxb8cwBNXs wIEDnD17NvQYi3o7hiFoXvr6+hIRw2JdgTYEzVszxWAIWpAkxbCQ2zEMQQuWlBgWcjuGIWhRJCmG +VxnMAQtmqTEMDo6WvPtGIagRZWUGMbGxmo6MhiCFl1SYvh4BXouDEGxSEoMc/1dq4ag2CQlhrn8 aNUQFKskxfDrr79+8fOGoNglJYZTp05x5MiRz37OEFQXfX19jIyMhB6D3377jatXr8563BBUNwMD A4mIoauri3K5POMxQ1BdJSWGo0ePzvjYEFR3AwMDnD59OugMx48f5/79+1MfG4KCOHjwYPAYjh07 NvVvQ1AwoWM4efIkz58/BwxBgYWO4dy5c4AhKAFCxvDHH38AhqCECBVDqVTi+fPnhqDkCBXDnTt3 DEHJEiKGyclJQxCkUqnQI8xw8ODBul50+/vvv2mp29aUWI8ePeKHH37g/fv3oUeZ0tPTw/DwMMeP H499W9euXTMEQW9vb+gRgvr33389NZKePHliCBJ4HUECDEECDEECDEECDEECDEECDEECDEECDEEC DKEhpNN+m+LmK9wAOjo6Qo/Q9AyhAezatSv0CE3PEBrA9u3bQ4/Q9AyhAcznj+OpNobQADKZDL// /nvoMZpaCoji3ECpVKK9vT3OTSwJ1WqVlhbfUBgXjwgNIpPJMDExEXqMpmUIDeSXX34hl8uFHqMp GUKD6e7uplgshh6j6RhCA+rs7KRSqXD48OHQozQN/7Pc4MrlMleuXOHSpUucO3du1p9E0twYghLv 0aNHrFu3LtZteGqkxKvHb+AzBAlDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABD kABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABD kABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABD kABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABD kABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABD kABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABD kABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABD kABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABDkABoiXsDpVKJt2/f xr0ZNbHHjx/Hvo1Ua2trVC6XY9+QlFTZbJZ0W1tb6DmkoFasWEF63bp1oeeQgmpvbye9devW0HNI QW3ZsoX0+vXrQ88hBbV+/XrSnZ2doeeQgurs7CQVRVGUSqVCzyIFE0XRhwtqg4ODoWeRghgaGgL+ f2V5YGAg6DBSKH19fQAfTo0APD3SUpPNZnnx4gUw7V6jkZGRYANJIZw4cWLq31NHBIDvvvsOb7fQ UjD9aACf3H168eLFug8khXD+/PmZD0SfGBwcjACXq2nX0NDQp7t9NOPUCKBarfL99997iqSm1NbW xuPHj8lkMjMen/XGnEwmw+TkZN0Gk+ppfHx8VgTwhXeotbe3UywWYx9Kqqe7d++ydu3az39y1snS NBMTE8HP51yuxVh379792q4efTWEKIqihw8fRitXrgz+RFyu+ayOjo7o2bNn39rNvx1CFEVRpVKJ +vv7gz8pl6uWNTQ0FFUqlbns4nML4aNcLhf8yblc31qtra1RoVCoZdeuLYQo+nB0GBkZibLZbPAn 7HJNX21tbdHZs2dr3aXnF8J0hUIh6u3tDf4CuJb26u/vj4rF4kJ25dkX1OajWq1y+/ZtxsfHefXq FRMTE/z111/8888/vHz5cqFfXiKbzbJ69Wo2bNhAZ2cnq1ev5qeffmLz5s2fvS5Qq/8BtNEvOsFB YKsAAAAASUVORK5CYII= "
        style="image-rendering:optimizeSpeed"
        preserveAspectRatio="none"
        height="27.722652"
@@ -638,12 +594,12 @@ YKsAAAAASUVORK5CYII=
          x="2.6640804"
          y="283.38776"
          style="font-size:4.93888903px;line-height:0.60000002;stroke-width:0.26458332"
-         id="tspan7755">be  assigned using information on normal cells/clonality </tspan><tspan
+         id="tspan7755">be  assigned using information on normal cells </tspan><tspan
          sodipodi:role="line"
          x="2.6640804"
          y="289.73776"
          style="font-size:4.93888903px;line-height:0.60000002;stroke-width:0.26458332"
-         id="tspan7751">i.e: false=find in 1 normal cell, true=found in at least 2</tspan></text>
+         id="tspan7751">i.e: false=find in 1 normal cell, true=found in at least 3</tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:1.66499996;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 150.19206,87.614229 0.91236,208.929591"
