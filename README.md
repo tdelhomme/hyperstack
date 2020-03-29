@@ -1,5 +1,7 @@
 # needlestack-ITC
 
+<img align="center" src="https://github.com/tdelhomme/needlestack-ITC/blob/master/method.png" width="500">
+
 ## Description
 Nextflow pipeline to run the intercept method on needlestack calling with a step of FDR computation with ML.
 
