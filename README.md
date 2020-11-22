@@ -1,9 +1,9 @@
-# needlestack-ITC
+# hyperstack
 
 <img align="center" src="https://github.com/tdelhomme/needlestack-ITC/blob/master/method.png" width="600">
 
 ## Description
-Nextflow pipeline to run the intercept method on needlestack calling with a step of FDR computation with ML.
+Nextflow pipeline to run the hyperstack method on needlestack calling with a step of FDR computation with ML.
 
 This pipeline first trains a random forest algorithm based a set of true and false positve variant, defined with one of the following method:
   * on ethnicity of the samples in the VCF: TP are variants reported in the same ethnicity and FP are variants reported in another ethnicity, based on 1000 genome project database
