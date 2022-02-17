@@ -19,7 +19,7 @@
 
 log.info ""
 log.info "-------------------------------------------------------------------------"
-log.info "  needlestack-ITC-nf: nextflow pipeline to run the intercept method "
+log.info "  hyperstack: nextflow pipeline to run the intercept method "
 log.info "  on needlestack variant calling with a step of ML to compute FDRs       "
 log.info "-------------------------------------------------------------------------"
 log.info "Copyright (C) IRB Barcelona"
@@ -56,7 +56,7 @@ if (params.help) {
 
 params.train_vcf = null
 params.apply_vcf = null
-params.output_folder = "needlestack-ITC_result"
+params.output_folder = "hyperstack_result"
 params.germline_file = "NO_FILE"
 params.mappability_file = "NO_FILE"
 
