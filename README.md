@@ -49,7 +49,7 @@ Flags are special parameters without value.
 
 ## Usage
   ```
-  nextflow run tdelhomme/needlestack-ITC --train_vcf gold.vcf.bgz --apply_vcf test.vcf.bgz
+  nextflow run tdelhomme/hyperstack --train_vcf gold.vcf.bgz --apply_vcf test.vcf.bgz
   ```
 
 ## Output
